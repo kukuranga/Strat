@@ -10,6 +10,8 @@ public class GameManager : Singleton<GameManager>
 
     public static event Action<GameState> onGameStateChanged;
 
+    public bool _DebuggerMode;
+
 
     private void Start()
     {

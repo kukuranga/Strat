@@ -46,23 +46,21 @@ public class PlayerManager : Singleton<PlayerManager>
 
     private void Update()
     {
-        if (_HasUnitInHand && _UnitInHand != null && _BaseUnitGameObject != null)
+        //RayCastDebbuger
+        if (GameManager.Instance._DebuggerMode)
         {
-            //FollowMouse();
+            if (Input.GetMouseButtonDown(0)) // Left mouse click
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    Debug.Log($"Raycast hit: {hit.collider.name} (Layer: {hit.collider.gameObject.layer})");
+                }
+                else
+                {
+                    Debug.Log("No hit detected");
+                }
+            }
         }
-    }
-
-    //TODO: this does not work with the current camera setup, to fix make the raycast to each object in the game have the orb set its posiiton to that orb when hovered
-    private void FollowMouse()
-    {
-        // Get the mouse position in screen space
-        Vector3 mousePosition = Input.mousePosition;
-
-        // Convert the mouse position to world space and set the Z position to the fixed depth
-        mousePosition.z = Camera.main.nearClipPlane; // Adjust near clip plane if necessary
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-        // Update the GameObject's position to follow the cursor while keeping its Z position fixed
-        _BaseUnitGameObject.transform.position = new Vector3(worldPosition.x, worldPosition.y, fixedZPosition);
     }
 }
