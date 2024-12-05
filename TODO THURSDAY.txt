@@ -1,0 +1,37 @@
+-FAST PACED QUICK OBJECTIVE BASED STRATEGY GAME.
+-COLORFULL VISUALS AND QUICK MOVEMENTS
+-PLEANTY OF EFFECTS
+
+//---TODO--//
+
+-UnitSpawn Location
+	-Make each tile have a Spawnable marker that will be set by the playerManager
+	-create a method that will return the first row of coordinates that are spawnable
+	-(Later) make a way to stop mountain tiles in the first spawnable amount
+
+-Change the button to create a unit to drg and drop rather than point and click
+
+
+-fix the test units follow location to follow the player cursor. *Failed to fix(fuck unity)//Update: FIXED!!
+		-(Later) highlight all Tiles the player can place the unit and only spawn it ont hose tiles
+
+
+- make the character selection ui
+	-add the atb cost and images
+
+- Make the move and combat options
+	-make and setup the buttons, using the selected unit in the unit manager
+	
+
+-make the unit shop
+	-make units spawn on clicks
+	-make the units move and interact
+-make the objective system
+
+-remove the FollowMouseCursor script from the Helpers folder is not used
+
+
+------------Networking---------
+
+-Make sure only to send the information on the units.
+-make player 2's camera work on the other side of the game board

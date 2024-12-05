@@ -8,8 +8,11 @@ public class PlayerManager : Singleton<PlayerManager>
     public bool _HasUnitInHand = false;
     public BaseUnit _UnitInHand;
     public GameObject _BaseUnitGameObject;
+    public List<Vector2> _SpawningTiles; //Tiles the player is allowed to spawn units on after buying
+    //Syntax: each option in here should return the values of the tiles capable to spawn in
 
     public float fixedZPosition = -1f; // Fixed Z position for the unit in world space
+    public bool _UnitHoverOverTile;
 
     // To be called by the multiplayer manager to set the correct player number to this player
     public void SetPlayerNumber(int i)
@@ -61,6 +64,15 @@ public class PlayerManager : Singleton<PlayerManager>
                     Debug.Log("No hit detected");
                 }
             }
+        }
+
+        if(_HasUnitInHand && !_UnitHoverOverTile)
+        {
+            // Set the position of the unit in hand to follow the mouse cursor
+            Vector3 mousePosition = Input.mousePosition; // Get mouse position in screen space
+            mousePosition.z = Camera.main.WorldToScreenPoint(_UnitInHand.transform.position).z; // Maintain the current Z-depth
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition); // Convert screen space to world space
+            _UnitInHand.gameObject.transform.position = new Vector3(worldPosition.x, worldPosition.y, _UnitInHand.transform.position.z); // Update position
         }
     }
 }

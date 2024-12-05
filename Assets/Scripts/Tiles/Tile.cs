@@ -26,6 +26,7 @@ public abstract class Tile : MonoBehaviour
 
         if(PlayerManager.Instance._HasUnitInHand)
         {
+            PlayerManager.Instance._UnitHoverOverTile = true;
             HoverUnit(PlayerManager.Instance._UnitInHand);
         }
     }
@@ -34,6 +35,11 @@ public abstract class Tile : MonoBehaviour
     {
         _highlight.SetActive(false);
         MenuManager.Instance.ShowTileInfo(null);
+
+        if (PlayerManager.Instance._HasUnitInHand)
+        {
+            PlayerManager.Instance._UnitHoverOverTile = false;
+        }
     }
 
     private void OnMouseDown()
