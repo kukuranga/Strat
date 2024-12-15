@@ -25,7 +25,8 @@ public class GameManager : Singleton<GameManager>
         switch (newState)
         {
             case GameState.GenerateGrid:
-                GridManager.Instance.GenerateGrid();   
+                GridManager.Instance.GenerateGrid();
+                PlayerManager.Instance.InitializePlayerData();
                 break;
             case GameState.PlaceStartingUnits:
                 //UnitManager.Instance.SpawnTestUnit();//This is a test

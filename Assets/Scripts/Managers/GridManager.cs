@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,15 +6,13 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class GridManager : Singleton<GridManager>
-{  
-
+{
     [SerializeField] private int _mountainSpawnRatio;
     [SerializeField] private int width, height;
-    [SerializeField] private Tile _grassTile, _mountainTile; 
+    [SerializeField] private Tile _grassTile, _mountainTile;
     [SerializeField] private Transform _cam;
     private Dictionary<Vector2, Tile> _tiles;
     public GameObject _TileParent;
-
 
     public void GenerateGrid()
     {
@@ -53,7 +50,6 @@ public class GridManager : Singleton<GridManager>
         GameManager.Instance.UpdateGameState(GameState.PlaceStartingUnits);
     }
 
-    //todo: Check if this values actually get called when changing the unit manager
     public Tile GetHeroSpawnTile()
     {
         return _tiles.Where(t => t.Key.x < width/2 && t.Value.walkable).OrderBy(t => Random.value).First().Value;
@@ -64,59 +60,72 @@ public class GridManager : Singleton<GridManager>
         return _tiles.Where(t => t.Key.x > width/2 && t.Value.walkable).OrderBy(t => Random.value).First().Value;
     }
 
-    public Tile GetTileAtPosition(Vector2 pos) {
-        if( _tiles.TryGetValue(pos,out var tile))
+    public Tile GetTileAtPosition(Vector2 pos)
+    {
+        if (_tiles.TryGetValue(pos, out var tile))
         {
             return tile;
         }
         return null;
     }
 
+    // Returns all tiles where _Spawnable is true
+    public List<Tile> GetSpawnableTiles()
+    {
+        return _tiles.Values.Where(tile => tile._Spawnable).ToList();
+    }
 
-    //Returns all tiles the unit can move
+    public void MakeTilesSpawnable(List<Vector2> positions)
+    {
+        if (_tiles == null)
+        {
+            Debug.LogError("Tiles dictionary is not initialized. Make sure GenerateGrid() is called before this method.");
+            return;
+        }
+
+        foreach (var position in positions)
+        {
+            if (_tiles.TryGetValue(position, out Tile tile))
+                if(tile._isWalkable)
+                    tile._Spawnable = true;            
+        }
+    }
+
+    public void MakeRowTilesSpawnable(int row)
+    {
+        if (_tiles == null)
+        {
+            Debug.LogError("Tiles dictionary is not initialized. Make sure GenerateGrid() is called before this method.");
+            return;
+        }
+
+        var positions = new List<Vector2>();
+        for (int x = 0; x < width; x++)
+        {
+            positions.Add(new Vector2(x, row));
+        }
+        MakeTilesSpawnable(positions);
+    }
+
+    // Returns all tiles the unit can move based on the specific movement offsets
     public List<Tile> _GetAllMoveableTiles(List<Vector2> movementOffsets, Tile startTile)
     {
         // Result list to store all moveable tiles
         List<Tile> moveableTiles = new List<Tile>();
 
-        // A set to keep track of visited tiles
-        HashSet<Vector2> visited = new HashSet<Vector2>();
-
-        // Start the recursive search
-        RecursiveSearch(startTile, movementOffsets, movementOffsets.Count, visited, moveableTiles);
-
-        return moveableTiles;
-    }
-
-    // Recursive helper method
-    private void RecursiveSearch(
-        Tile currentTile,
-        List<Vector2> movementOffsets,
-        int remainingSteps,
-        HashSet<Vector2> visited,
-        List<Tile> moveableTiles)
-    {
-        // Get the current tile position
-        Vector2 currentPosition = new Vector2(currentTile._coordinates.x, currentTile._coordinates.y);
-
-        // Base case: if no steps remain or the tile is already visited, exit
-        if (remainingSteps <= 0 || visited.Contains(currentPosition))
-            return;
-
-        // Add the current tile to the visited set and result list
-        visited.Add(currentPosition);
-        moveableTiles.Add(currentTile);
-
-        // Explore neighbors based on movement offsets
+        // Loop through the movement offsets
         foreach (var offset in movementOffsets)
         {
-            Vector2 neighborPos = new Vector2(currentTile._coordinates.x + offset.x, currentTile._coordinates.y + offset.y);
+            // Calculate the target position for each offset
+            Vector2 targetPos = new Vector2(startTile._coordinates.x + offset.x, startTile._coordinates.y + offset.y);
 
-            // Check if the neighbor is valid and walkable
-            if (_tiles.TryGetValue(neighborPos, out Tile neighborTile) && neighborTile.walkable)
+            // Check if the target position is valid and the tile is walkable
+            if (_tiles.TryGetValue(targetPos, out Tile targetTile) && targetTile.walkable)
             {
-                RecursiveSearch(neighborTile, movementOffsets, remainingSteps - 1, visited, moveableTiles);
+                moveableTiles.Add(targetTile);
             }
         }
+
+        return moveableTiles;
     }
 }

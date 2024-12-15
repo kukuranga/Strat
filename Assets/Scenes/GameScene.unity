@@ -830,7 +830,11 @@ MonoBehaviour:
   _HasUnitInHand: 0
   _UnitInHand: {fileID: 0}
   _BaseUnitGameObject: {fileID: 0}
+  _SelectedUnit: {fileID: 0}
+  _StartingSpawningTiles: []
+  _SelectedUnitsTiles: []
   fixedZPosition: -1
+  _UnitHoverOverTile: 0
 --- !u!1 &506489324
 GameObject:
   m_ObjectHideFlags: 0
@@ -1246,7 +1250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mountainSpawnRatio: 6
-  width: 10
+  width: 13
   height: 10
   _grassTile: {fileID: 4196839373690181156, guid: 409adbee1047de547b4cce0365226588,
     type: 3}
@@ -2298,7 +2302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   State: 0
-  _DebuggerMode: 1
+  _DebuggerMode: 0
 --- !u!1 &2016133351
 GameObject:
   m_ObjectHideFlags: 0

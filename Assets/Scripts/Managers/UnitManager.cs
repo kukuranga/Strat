@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum UnitType
@@ -26,14 +27,21 @@ public class UnitManager : Singleton<UnitManager>
     {
         if (!PlayerManager.Instance._HasUnitInHand)
         {
-            if (ATBManager.Instance.PayATBCost(_TestObjects.prefab.GetComponent<BaseUnit>()._ATBCost))
-            {
+            //if (ATBManager.Instance.PayATBCost(_TestObjects.prefab.GetComponent<BaseUnit>()._ATBCost))
                 //TODO: simplify this to a single line
                 Vector3 _pos = new Vector3(0, 0, -1);
                 GameObject _obj = _TestObjects.GetObject(_pos, Quaternion.identity);
                 PlayerManager.Instance.SetUnitInHand(_obj.GetComponent<BaseUnit>(), _obj);
                 return true;
-            }
+        }
+        return false;
+    }
+
+    public bool ReturnTestUnit()
+    {
+        if( PlayerManager.Instance._HasUnitInHand)
+        {
+            _TestObjects.ReturnObject(PlayerManager.Instance._UnitInHand.GameObject());
         }
         return false;
     }
@@ -77,20 +85,20 @@ public class UnitManager : Singleton<UnitManager>
         //GameManager.Instance.UpdateGameState(GameState.HeroesTurn);
     }
 
-    //TODO:fIX, THIS DOES NOT WORK
-    public void SpawnTestUnit()
-    {
-        var heroCount = 1;
+    ////TODO:fIX, THIS DOES NOT WORK
+    //public void SpawnTestUnit()
+    //{
+    //    var heroCount = 1;
 
-        for(int i = 0; i < heroCount; i++)
-        {
-            var randomPrefab = GetRandomUnit<BaseUnit>(Faction.Hero);
-            var spawnedUnit = Instantiate(randomPrefab);
-            var randomSpawnTile = GridManager.Instance.GetHeroSpawnTile();
+    //    for(int i = 0; i < heroCount; i++)
+    //    {
+    //        var randomPrefab = GetRandomUnit<BaseUnit>(Faction.Hero);
+    //        var spawnedUnit = Instantiate(randomPrefab);
+    //        var randomSpawnTile = GridManager.Instance.GetHeroSpawnTile();
 
-            randomSpawnTile.SetUnit(spawnedUnit);
-        }
-    }
+    //        randomSpawnTile.SetUnit(spawnedUnit);
+    //    }
+    //}
 
     private T GetRandomUnit<T>(Faction faction) where T: BaseUnit
     {

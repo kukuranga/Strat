@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public abstract class Tile : MonoBehaviour
 {
@@ -9,29 +10,39 @@ public abstract class Tile : MonoBehaviour
     public Vector2Int _coordinates;
 
     [SerializeField] private GameObject _highlight;
+    [SerializeField] private GameObject _SpawnableTile;
+    [SerializeField] private GameObject _SelectedTile;
     public bool _isWalkable;
 
     public BaseUnit occupiedUnit;
     public bool walkable => _isWalkable && occupiedUnit == null;
+    public bool _Spawnable = false; // This shows if a tile is available for unit spawning.
+    public bool _Selected = false;
+
+    private void Update()
+    {
+        _SpawnableTile.SetActive(_Spawnable && PlayerManager.Instance._HasUnitInHand);
+        _SelectedTile.SetActive(_Selected);
+    }
 
     public virtual void Init(int x, int y)
     {
         _coordinates = new Vector2Int(x, y);
     }
 
-    void OnMouseEnter()
+    private void OnMouseEnter()
     {
         _highlight.SetActive(true);
         MenuManager.Instance.ShowTileInfo(this);
 
-        if(PlayerManager.Instance._HasUnitInHand)
+        if (PlayerManager.Instance._HasUnitInHand)
         {
             PlayerManager.Instance._UnitHoverOverTile = true;
             HoverUnit(PlayerManager.Instance._UnitInHand);
         }
     }
 
-    void OnMouseExit()
+    private void OnMouseExit()
     {
         _highlight.SetActive(false);
         MenuManager.Instance.ShowTileInfo(null);
@@ -42,44 +53,48 @@ public abstract class Tile : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+    private void OnMouseOver()
     {
-        if(GameManager.Instance._DebuggerMode)
-            Debug.Log("Tile clicked: " + _coordinates);
-        
-        //TODO: when button pressed place the unit here and remove it from the player manager unit in hand
-        if (occupiedUnit != null)
+        // Detect right-click while the mouse is over the tile
+        if (Input.GetMouseButtonDown(1)) // Right-click
         {
-            //TODO: this will start combat
-
-            //if (occupiedUnit.Faction == Faction.Hero)
-            //    UnitManager.Instance.SetSelectedHero((BaseHero)occupiedUnit);
-            //else
-            //{
-            //    if (UnitManager.Instance.SelectedHero != null)
-            //    {
-            //        var enemy = (BaseEnemy)occupiedUnit;
-            //        Destroy(enemy.gameObject);
-            //        UnitManager.Instance.SetSelectedHero(null);
-            //    }
-            //}
-            Debug.Log("Already A Unit Here");
-        }
-        else
-        {
-            //if (UnitManager.Instance.SelectedHero != null)
-            //{
-            //    SetUnit(UnitManager.Instance.SelectedHero);
-            //    UnitManager.Instance.SetSelectedHero(null);
-            //}
             if (PlayerManager.Instance._HasUnitInHand)
             {
-                SetUnit(PlayerManager.Instance._UnitInHand);
-                PlayerManager.Instance.EmptyHand();
+                RemoveUnitFromHand();
             }
         }
     }
 
+   private void OnMouseDown()
+   {
+        if (GameManager.Instance._DebuggerMode)
+            Debug.Log("Tile clicked: " + _coordinates);
+
+        if (Input.GetMouseButtonDown(0)) // Left-click
+        {
+            if (occupiedUnit != null) // If there is a unit on the tile
+            {
+                // Select the unit and highlight tiles
+                PlayerManager.Instance.SetUnitSelected(occupiedUnit);
+            }
+            else if(PlayerManager.Instance._SelectedUnit != null && _Selected)
+            {
+                //Move the unit here
+                //Steps: Set the selected unit position to this tile. clear all slected values form the playerManager
+                SetUnit(PlayerManager.Instance._SelectedUnit);
+                PlayerManager.Instance.ClearAll();
+            }
+            else
+            {
+                if (PlayerManager.Instance._HasUnitInHand && _Spawnable)
+                {
+                    SpawnUnit(PlayerManager.Instance._UnitInHand);
+                }
+            }
+        }
+   }
+
+    //Moves The Unit to this tile
     public void SetUnit(BaseUnit unit)
     {
         if (unit.OccupiedTile != null)
@@ -94,6 +109,42 @@ public abstract class Tile : MonoBehaviour
         unit.OccupiedTile = this;
     }
 
+    //Spawns the unit on this tile
+    public void SpawnUnit(BaseUnit unit)
+    {
+        // Use ATBManager's PayATBCost method to check affordability and deduct cost
+        if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._UnitInHand._ATBCost))
+        {
+            if (unit.OccupiedTile != null)
+                unit.OccupiedTile.occupiedUnit = null;
+
+            // Preserve the current Z position of the unit
+            Vector3 newPosition = transform.position;
+            newPosition.z = unit.transform.position.z;
+
+            unit.transform.position = newPosition;
+            occupiedUnit = unit;
+            unit.OccupiedTile = this;
+
+            PlayerManager.Instance.EmptyHand();
+        }
+        else
+        {
+            Debug.Log("Cannot afford to place the unit.");
+            // TODO: Add UI feedback or animation to notify the player.
+        }
+    }
+
+
+    public void RemoveUnitFromHand()
+    {
+        // Return the unit in hand to the object pool
+        UnitManager.Instance.ReturnTestUnit();
+
+        // Clear the unit in hand reference in the PlayerManager
+        PlayerManager.Instance.EmptyHand();
+    }
+
     public void HoverUnit(BaseUnit unit)
     {
         // Preserve the current Z position of the unit
@@ -103,4 +154,13 @@ public abstract class Tile : MonoBehaviour
         unit.transform.position = newPosition;
     }
 
+    public void SetSpawnableTile(bool b)
+    {
+        _Spawnable = b;
+    }
+
+    public void SetSelectedTile(bool b)
+    {
+        _Selected = b;
+    }
 }
