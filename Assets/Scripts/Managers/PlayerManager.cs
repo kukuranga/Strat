@@ -13,7 +13,8 @@ public class PlayerManager : Singleton<PlayerManager>
     //Syntax: each option in here should return the values of the tiles capable to spawn in
     //OnStart set the first 2 rows (0,1)
 
-    public List<Tile> _SelectedUnitsTiles;
+    public List<Tile> _SelectedUnitsTilesMovement;
+    public List<Tile> _SelectedUnitsTilesCombat;
 
     public float fixedZPosition = -1f; // Fixed Z position for the unit in world space
     public bool _UnitHoverOverTile;
@@ -51,6 +52,15 @@ public class PlayerManager : Singleton<PlayerManager>
             mousePosition.z = Camera.main.WorldToScreenPoint(_UnitInHand.transform.position).z; // Maintain the current Z-depth
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition); // Convert screen space to world space
             _UnitInHand.gameObject.transform.position = new Vector3(worldPosition.x, worldPosition.y, _UnitInHand.transform.position.z); // Update position
+        }
+
+        if(_SelectedUnit != null) //shows the selected unit in the menu
+        {
+            MenuManager.Instance.ShowSelectedHero(_SelectedUnit);
+        }
+        else
+        {
+            MenuManager.Instance.ClearSelectedHero();
         }
     }
 
@@ -90,20 +100,31 @@ public class PlayerManager : Singleton<PlayerManager>
         ClearAll();
         EmptyHand();
         _SelectedUnit = _unit;
-        _SelectedUnitsTiles = GridManager.Instance._GetAllMoveableTiles(_SelectedUnit.Moves, _SelectedUnit.OccupiedTile);
-        foreach(Tile t in _SelectedUnitsTiles)
+        _SelectedUnitsTilesMovement = GridManager.Instance.GetAllTilesInRange(_SelectedUnit.Moves, _SelectedUnit.OccupiedTile, true);
+        _SelectedUnitsTilesCombat = GridManager.Instance.GetAllTilesInRange(_SelectedUnit.Combat, _SelectedUnit.OccupiedTile, false);
+        foreach (Tile t in _SelectedUnitsTilesMovement)
         {
             t.SetSelectedTile(true);
         }
+        foreach(Tile t in _SelectedUnitsTilesCombat)
+        {
+            t.SetCombatTile(true);
+        }
+
     }
 
     public void ClearSelectedUnit()
     {
-        foreach(Tile t in _SelectedUnitsTiles)
+        foreach(Tile t in _SelectedUnitsTilesMovement)
         {
             t.SetSelectedTile(false);
         }
-        _SelectedUnitsTiles.Clear();
+        foreach(Tile t in _SelectedUnitsTilesCombat)
+        {
+            t.SetCombatTile(false);
+        }
+        _SelectedUnitsTilesMovement.Clear();
+        _SelectedUnitsTilesCombat.Clear();
         _SelectedUnit = null;
     }
 

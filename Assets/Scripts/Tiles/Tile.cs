@@ -12,17 +12,20 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] private GameObject _highlight;
     [SerializeField] private GameObject _SpawnableTile;
     [SerializeField] private GameObject _SelectedTile;
+    [SerializeField] private GameObject _CombatTile;
     public bool _isWalkable;
 
     public BaseUnit occupiedUnit;
     public bool walkable => _isWalkable && occupiedUnit == null;
     public bool _Spawnable = false; // This shows if a tile is available for unit spawning.
     public bool _Selected = false;
+    public bool _Combat = false;
 
     private void Update()
     {
         _SpawnableTile.SetActive(_Spawnable && PlayerManager.Instance._HasUnitInHand);
         _SelectedTile.SetActive(_Selected);
+        _CombatTile.SetActive(_Combat);
     }
 
     public virtual void Init(int x, int y)
@@ -61,6 +64,11 @@ public abstract class Tile : MonoBehaviour
             if (PlayerManager.Instance._HasUnitInHand)
             {
                 RemoveUnitFromHand();
+                //PlayerManager.Instance.ClearAll();
+            }
+            if(PlayerManager.Instance._SelectedUnit != null)
+            {
+                PlayerManager.Instance.ClearAll();
             }
         }
     }
@@ -74,15 +82,27 @@ public abstract class Tile : MonoBehaviour
         {
             if (occupiedUnit != null) // If there is a unit on the tile
             {
-                // Select the unit and highlight tiles
-                PlayerManager.Instance.SetUnitSelected(occupiedUnit);
+
+                if (_CombatTile && PlayerManager.Instance._SelectedUnit != null) //Combat logic
+                {
+                    PlayerManager.Instance._SelectedUnit.CombatLogic(occupiedUnit, this, PlayerManager.Instance._SelectedUnit.OccupiedTile);
+                    Debug.Log("Combat!!");
+                }
+                else
+                {
+                    // Select the unit and highlight tiles
+                    PlayerManager.Instance.SetUnitSelected(occupiedUnit);
+                }
             }
-            else if(PlayerManager.Instance._SelectedUnit != null && _Selected)
+            else if(PlayerManager.Instance._SelectedUnit != null && _Selected) //Moves the unit to this tile
             {
                 //Move the unit here
                 //Steps: Set the selected unit position to this tile. clear all slected values form the playerManager
-                SetUnit(PlayerManager.Instance._SelectedUnit);
-                PlayerManager.Instance.ClearAll();
+                if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._SelectedUnit._ATBMoveCost))
+                {
+                    SetUnit(PlayerManager.Instance._SelectedUnit);
+                    PlayerManager.Instance.ClearAll();
+                }
             }
             else
             {
@@ -91,6 +111,7 @@ public abstract class Tile : MonoBehaviour
                     SpawnUnit(PlayerManager.Instance._UnitInHand);
                 }
             }
+            
         }
    }
 
@@ -113,7 +134,7 @@ public abstract class Tile : MonoBehaviour
     public void SpawnUnit(BaseUnit unit)
     {
         // Use ATBManager's PayATBCost method to check affordability and deduct cost
-        if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._UnitInHand._ATBCost))
+        if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._UnitInHand._ATBSpawnCost))
         {
             if (unit.OccupiedTile != null)
                 unit.OccupiedTile.occupiedUnit = null;
@@ -162,5 +183,10 @@ public abstract class Tile : MonoBehaviour
     public void SetSelectedTile(bool b)
     {
         _Selected = b;
+    }
+
+    public void SetCombatTile(bool b)
+    {
+        _Combat = b;
     }
 }

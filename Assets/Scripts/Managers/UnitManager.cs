@@ -48,57 +48,15 @@ public class UnitManager : Singleton<UnitManager>
 
     #endregion
 
+    public void KillUnit(BaseUnit _unit)
+    {
+        _TestObjects.ReturnObject(_unit.gameObject);
+    }
+
     private void Awake()
     { 
         //_units = Resources.LoadAll<ScriptableUnit>("Units").ToList();
     }
-
-    public void SpawnHeroes()
-    {
-        //var herocount = 1;
-
-        //for (int i = 0; i < herocount; i++)
-        //{
-        //    var randomPrefab = GetRandomUnit<BaseHero>(Faction.Hero);
-        //    var spawnedHero = Instantiate(randomPrefab);
-        //    var randomSpawnTile = GridManager.Instance.GetHeroSpawnTile();
-
-        //    randomSpawnTile.SetUnit(spawnedHero);
-        //}
-
-        //GameManager.Instance.UpdateGameState(GameState.SpawnEnemies);
-    }
-
-    public void SpawnEnemies()
-    {
-        //var enemycount = 1;
-
-        //for (int i = 0; i < enemycount; i++)
-        //{
-        //    var randomPrefab = GetRandomUnit<BaseEnemy>(Faction.Enemy);
-        //    var spawnedEnemy = Instantiate(randomPrefab);
-        //    var randomSpawnTile = GridManager.Instance.GetEnemySpawnTile();
-
-        //    randomSpawnTile.SetUnit(spawnedEnemy);
-        //}
-
-        //GameManager.Instance.UpdateGameState(GameState.HeroesTurn);
-    }
-
-    ////TODO:fIX, THIS DOES NOT WORK
-    //public void SpawnTestUnit()
-    //{
-    //    var heroCount = 1;
-
-    //    for(int i = 0; i < heroCount; i++)
-    //    {
-    //        var randomPrefab = GetRandomUnit<BaseUnit>(Faction.Hero);
-    //        var spawnedUnit = Instantiate(randomPrefab);
-    //        var randomSpawnTile = GridManager.Instance.GetHeroSpawnTile();
-
-    //        randomSpawnTile.SetUnit(spawnedUnit);
-    //    }
-    //}
 
     private T GetRandomUnit<T>(Faction faction) where T: BaseUnit
     {

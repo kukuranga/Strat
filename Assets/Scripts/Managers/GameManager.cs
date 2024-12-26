@@ -12,6 +12,8 @@ public class GameManager : Singleton<GameManager>
 
     public bool _DebuggerMode;
 
+    public HitStop _HitStop;
+
 
     private void Start()
     {

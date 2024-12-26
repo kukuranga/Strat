@@ -1250,13 +1250,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mountainSpawnRatio: 6
-  width: 13
-  height: 10
+  width: 21
+  height: 15
   _grassTile: {fileID: 4196839373690181156, guid: 409adbee1047de547b4cce0365226588,
     type: 3}
   _mountainTile: {fileID: 7115245336941187373, guid: 1ad67350318e2a9489333666e5994c4a,
     type: 3}
   _cam: {fileID: 330585546}
+  cameraAngle: -10
+  cameraDistance: 10
+  moveSpeed: 5
+  zoomSpeed: 10
+  rotationSpeed: 30
+  useOrthographicCamera: 0
   _TileParent: {fileID: 2104612582}
 --- !u!1 &817799033
 GameObject:

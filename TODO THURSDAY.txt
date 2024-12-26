@@ -4,9 +4,20 @@
 
 -----Pending------
 
--Make a marker on the atb guage to show the amount needed to place the unit
+-Make a marker on the atb guage to show the amount needed to place the unit //Maybe make a red outline
 
--Make the movement cost atb and change the camera angle to be better to view
+-combat, when a unit can move to an already occupied tile it should start combat
+	-Life guages
+	-life tracking (despawn on death)
+	-Make attack area
+	-send the attack data to the individual unit
+	-Expand on the unit death
+
+- make an addative nature to the move component
+	-this should add the movement amounts available using the values fed to the system
+	- do this by adding the
+
+-Make tiles have different movement values (Later)
 
 //---TODO--//
 
@@ -14,11 +25,6 @@
 	-(Later) make a way to stop mountain tiles in the first spawnable amount
 
 -Change the button to create a unit to drg and drop rather than point and click
-
-
--fix the test units follow location to follow the player cursor. *Failed to fix(fuck unity)//Update: FIXED!!
-		-(Later) highlight all Tiles the player can place the unit and only spawn it ont hose tiles
-
 
 - make the character selection ui
 	-add the atb cost and images
