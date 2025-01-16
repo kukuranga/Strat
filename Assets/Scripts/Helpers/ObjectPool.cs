@@ -42,10 +42,17 @@ public class ObjectPool : MonoBehaviour
         {
             if (!obj.activeInHierarchy)
             {
-                // Activate and set the object's position and rotation
+                // Activate and reset the object's state
                 obj.transform.position = position;
                 obj.transform.rotation = rotation;
                 obj.SetActive(true);
+
+                BaseUnit unit = obj.GetComponent<BaseUnit>();
+                if (unit != null)
+                {
+                    unit.ResetUnit(); // Reset the unit state
+                }
+
                 return obj;
             }
         }
@@ -57,12 +64,20 @@ public class ObjectPool : MonoBehaviour
             newObj.transform.position = position;
             newObj.transform.rotation = rotation;
             newObj.SetActive(true);
+
+            BaseUnit unit = newObj.GetComponent<BaseUnit>();
+            if (unit != null)
+            {
+                unit.ResetUnit(); // Reset the unit state
+            }
+
             return newObj;
         }
 
         Debug.LogWarning("No available objects in pool and pool expansion is disabled.");
         return null;
     }
+
 
     // Returns an object back to the pool
     public void ReturnObject(GameObject obj)

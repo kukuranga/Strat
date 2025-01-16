@@ -100,17 +100,31 @@ public class PlayerManager : Singleton<PlayerManager>
         ClearAll();
         EmptyHand();
         _SelectedUnit = _unit;
+        SelectedForMovement();
+        SelectedForCombat();
+    }
+
+    //Sets all tiles the player can move to as movable options
+    private void SelectedForMovement()
+    {
+
         _SelectedUnitsTilesMovement = GridManager.Instance.GetAllTilesInRange(_SelectedUnit.Moves, _SelectedUnit.OccupiedTile, true);
-        _SelectedUnitsTilesCombat = GridManager.Instance.GetAllTilesInRange(_SelectedUnit.Combat, _SelectedUnit.OccupiedTile, false);
+
         foreach (Tile t in _SelectedUnitsTilesMovement)
         {
             t.SetSelectedTile(true);
         }
-        foreach(Tile t in _SelectedUnitsTilesCombat)
+    }
+
+    //Selects all tiles the player uses for combat
+    private void SelectedForCombat()
+    {
+        _SelectedUnitsTilesCombat = GridManager.Instance.GetAllTilesInRange(_SelectedUnit.Combat, _SelectedUnit.OccupiedTile, false);
+
+        foreach (Tile t in _SelectedUnitsTilesCombat)
         {
             t.SetCombatTile(true);
         }
-
     }
 
     public void ClearSelectedUnit()

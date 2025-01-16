@@ -40,7 +40,7 @@ public class GridManager : Singleton<GridManager>
 
         AdjustCamera();
 
-        GameManager.Instance.UpdateGameState(GameState.PlaceStartingUnits);
+        GameManager.Instance.UpdateGameState(GameState.SetObjective);
     }
 
     private void AdjustCamera()

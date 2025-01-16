@@ -31,6 +31,7 @@ public class UnitManager : Singleton<UnitManager>
                 //TODO: simplify this to a single line
                 Vector3 _pos = new Vector3(0, 0, -1);
                 GameObject _obj = _TestObjects.GetObject(_pos, Quaternion.identity);
+                _obj.GetComponent<BaseUnit>().InitializeUnit();
                 PlayerManager.Instance.SetUnitInHand(_obj.GetComponent<BaseUnit>(), _obj);
                 return true;
         }

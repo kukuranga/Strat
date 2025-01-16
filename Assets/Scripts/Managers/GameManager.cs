@@ -30,14 +30,22 @@ public class GameManager : Singleton<GameManager>
                 GridManager.Instance.GenerateGrid();
                 PlayerManager.Instance.InitializePlayerData();
                 break;
+            case GameState.SetObjective:
+                //start the object setup 
+                ObjectiveManager.Instance.GetRandomObjective();
+                break;
             case GameState.PlaceStartingUnits:
+                GameManager.Instance.UpdateGameState(GameState.GameplayLoop);
                 //UnitManager.Instance.SpawnTestUnit();//This is a test
                 //UnitManager.Instance.SpawnHeroes();
                 break;
             case GameState.GameplayLoop:
+                ObjectiveManager.Instance.StartObjectiveLoop();
+                MenuManager.Instance.ShowObjectiveBanner();//Shows the objective banner
                 //UnitManager.Instance.SpawnEnemies();
                 break;
             case GameState.EndGame:
+                ObjectiveManager.Instance.StopObjectiveLoop();
                 break;
         }
 
@@ -51,7 +59,8 @@ public class GameManager : Singleton<GameManager>
 public enum GameState
 {
     GenerateGrid = 0,
-    PlaceStartingUnits = 1,
-    GameplayLoop = 2,
-    EndGame = 3,
+    SetObjective = 1,
+    PlaceStartingUnits = 2,
+    GameplayLoop = 3,
+    EndGame = 4,
 }

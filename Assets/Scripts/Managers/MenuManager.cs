@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MenuManager : Singleton<MenuManager>
 {
-    [SerializeField] private GameObject _selectedObjectHero, _TileObject,_TileUnitObject;
+    [SerializeField] private GameObject _selectedObjectHero, _TileObject,_TileUnitObject, _ObjectiveAnouncemetBanner;
 
     public void ShowTileInfo(Tile tile)
     {
@@ -40,5 +40,10 @@ public class MenuManager : Singleton<MenuManager>
     public void ClearSelectedHero()
     {
         _selectedObjectHero.SetActive(false);
+    }
+
+    public void ShowObjectiveBanner()
+    {
+        _ObjectiveAnouncemetBanner.SetActive(true);
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class Tile : MonoBehaviour
+public class Tile : MonoBehaviour
 {
     public string TileName;
     public Vector2Int _coordinates;
@@ -20,6 +20,7 @@ public abstract class Tile : MonoBehaviour
     public bool _Spawnable = false; // This shows if a tile is available for unit spawning.
     public bool _Selected = false;
     public bool _Combat = false;
+
 
     private void Update()
     {
@@ -75,6 +76,7 @@ public abstract class Tile : MonoBehaviour
 
    private void OnMouseDown()
    {
+
         if (GameManager.Instance._DebuggerMode)
             Debug.Log("Tile clicked: " + _coordinates);
 
@@ -106,7 +108,7 @@ public abstract class Tile : MonoBehaviour
             }
             else
             {
-                if (PlayerManager.Instance._HasUnitInHand && _Spawnable)
+                if (PlayerManager.Instance._HasUnitInHand && _Spawnable) //Spawns the unit on this tile
                 {
                     SpawnUnit(PlayerManager.Instance._UnitInHand);
                 }
@@ -114,7 +116,6 @@ public abstract class Tile : MonoBehaviour
             
         }
    }
-
     //Moves The Unit to this tile
     public void SetUnit(BaseUnit unit)
     {
@@ -189,4 +190,10 @@ public abstract class Tile : MonoBehaviour
     {
         _Combat = b;
     }
+
+    public void ClearOccupiedUnit()
+    {
+        occupiedUnit = null;  // Clear the occupied unit on the tile
+    }
+
 }
