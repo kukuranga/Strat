@@ -21,7 +21,6 @@ public class Tile : MonoBehaviour
     public bool _Selected = false;
     public bool _Combat = false;
 
-
     private void Update()
     {
         _SpawnableTile.SetActive(_Spawnable && PlayerManager.Instance._HasUnitInHand);
@@ -65,135 +64,119 @@ public class Tile : MonoBehaviour
             if (PlayerManager.Instance._HasUnitInHand)
             {
                 RemoveUnitFromHand();
-                //PlayerManager.Instance.ClearAll();
             }
-            if(PlayerManager.Instance._SelectedUnit != null)
+            if (PlayerManager.Instance._SelectedUnit != null)
             {
                 PlayerManager.Instance.ClearAll();
             }
         }
     }
 
-   private void OnMouseDown()
-   {
-
+    private void OnMouseDown()
+    {
         if (GameManager.Instance._DebuggerMode)
             Debug.Log("Tile clicked: " + _coordinates);
 
         if (Input.GetMouseButtonDown(0)) // Left-click
         {
-            if (occupiedUnit != null) // If there is a unit on the tile
+            // Case 1: There's already a unit on this tile
+            if (occupiedUnit != null)
             {
-
-                if (_CombatTile && PlayerManager.Instance._SelectedUnit != null) //Combat logic
+                // If the occupant is still moving, don't allow selection
+                if (occupiedUnit.isMoving)
                 {
-                    PlayerManager.Instance._SelectedUnit.CombatLogic(occupiedUnit, this, PlayerManager.Instance._SelectedUnit.OccupiedTile);
+                    Debug.Log("Unit is currently moving; cannot select yet.");
+                    return;
+                }
+
+                // If we're in combat or something else
+                if (_CombatTile && PlayerManager.Instance._SelectedUnit != null)
+                {
                     Debug.Log("Combat!!");
                 }
                 else
                 {
-                    // Select the unit and highlight tiles
+                    // Select the unit
                     PlayerManager.Instance.SetUnitSelected(occupiedUnit);
                 }
             }
-            else if(PlayerManager.Instance._SelectedUnit != null && _Selected) //Moves the unit to this tile
+            // Case 2: This tile is empty, but there's a selected unit wanting to move here
+            else if (PlayerManager.Instance._SelectedUnit != null && _Selected)
             {
-                //Move the unit here
-                //Steps: Set the selected unit position to this tile. clear all slected values form the playerManager
                 if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._SelectedUnit._ATBMoveCost))
                 {
                     SetUnit(PlayerManager.Instance._SelectedUnit);
                     PlayerManager.Instance.ClearAll();
                 }
             }
+            // Case 3: If the player has a unit in hand and tile is spawnable
             else
             {
-                if (PlayerManager.Instance._HasUnitInHand && _Spawnable) //Spawns the unit on this tile
+                if (PlayerManager.Instance._HasUnitInHand && _Spawnable)
                 {
                     SpawnUnit(PlayerManager.Instance._UnitInHand);
                 }
             }
-            
         }
-   }
-    //Moves The Unit to this tile
+    }
+
     public void SetUnit(BaseUnit unit)
     {
+        // Clear old occupant
         if (unit.OccupiedTile != null)
             unit.OccupiedTile.occupiedUnit = null;
 
-        // Preserve the current Z position of the unit
-        Vector3 newPosition = transform.position;
-        newPosition.z = unit.transform.position.z;
-
-        unit.transform.position = newPosition;
+        // Mark this tile as occupied
         occupiedUnit = unit;
-        unit.OccupiedTile = this;
+        unit.SetTile(this);
+
+        // Move the unit to this tile's position (smoothly handled by unit)
+        unit.MoveToTile(this);
     }
 
-    //Spawns the unit on this tile
     public void SpawnUnit(BaseUnit unit)
     {
-        // Use ATBManager's PayATBCost method to check affordability and deduct cost
         if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._UnitInHand._ATBSpawnCost))
         {
+            // Clear old occupant
             if (unit.OccupiedTile != null)
                 unit.OccupiedTile.occupiedUnit = null;
 
-            // Preserve the current Z position of the unit
-            Vector3 newPosition = transform.position;
-            newPosition.z = unit.transform.position.z;
-
-            unit.transform.position = newPosition;
+            // Mark occupant
             occupiedUnit = unit;
-            unit.OccupiedTile = this;
+            unit.SetTile(this);
+
+            // Move the unit to this tile's position
+            unit.MoveToTile(this);
 
             PlayerManager.Instance.EmptyHand();
         }
         else
         {
             Debug.Log("Cannot afford to place the unit.");
-            // TODO: Add UI feedback or animation to notify the player.
         }
     }
 
-
     public void RemoveUnitFromHand()
     {
-        // Return the unit in hand to the object pool
         UnitManager.Instance.ReturnTestUnit();
-
-        // Clear the unit in hand reference in the PlayerManager
         PlayerManager.Instance.EmptyHand();
     }
 
+    // For visual "hover" only
     public void HoverUnit(BaseUnit unit)
     {
-        // Preserve the current Z position of the unit
         Vector3 newPosition = transform.position;
         newPosition.z = unit.transform.position.z;
-
         unit.transform.position = newPosition;
     }
 
-    public void SetSpawnableTile(bool b)
-    {
-        _Spawnable = b;
-    }
-
-    public void SetSelectedTile(bool b)
-    {
-        _Selected = b;
-    }
-
-    public void SetCombatTile(bool b)
-    {
-        _Combat = b;
-    }
+    public void SetSpawnableTile(bool b) => _Spawnable = b;
+    public void SetSelectedTile(bool b) => _Selected = b;
+    public void SetCombatTile(bool b) => _Combat = b;
 
     public void ClearOccupiedUnit()
     {
         occupiedUnit = null;  // Clear the occupied unit on the tile
     }
-
 }

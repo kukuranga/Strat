@@ -7,9 +7,7 @@
 -Make a marker on the atb guage to show the amount needed to place the unit //Maybe make a red outline
 
 -combat, when a unit can move to an already occupied tile it should start combat
-	-Expand on the unit death
 	-add more indication that damage is being delt
--Change the combat system to work with auto attack and special moves after the fact
 
 - make an addative nature to the move component
 	-this should add the movement amounts available using the values fed to the system
@@ -17,10 +15,7 @@
 
 -Make tiles have different movement values (Later)
 
--Add steady animations to the units moving and attacking using GPT
-
 - Objective Manager
-	-Change the visuals on the Objective Banner
 	-make the game logic to show winners and losers for each game best of 3)
 
 Demo version
@@ -29,8 +24,6 @@ Demo version
 	-this logic can also be used in the tutorial
 
 -Refactor Game code to use the game states
-
--make movement on hold and attack on click
 
 -Finish work on the kilLObjective
 	-create the spawner object and the enemy prefab
@@ -49,8 +42,7 @@ Start Working on audio by stealing the other audio Manager
 - Link - https://youtu.be/XPh0jiqf0iQ 
 
 //----BUGS---//
--Unit can attack itself
--When Unit Dies it is still selectable (Clear the tile of all units on death)
+
 
 //---TODO--//
 
