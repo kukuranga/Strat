@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b40da8b3470e8e468901905e03c27cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentUnit: {fileID: 4787200179252613901}
+  parentUnit: {fileID: 6341732451180285242}
 --- !u!1 &2880935493563960877
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,7 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d08aeef94fdfd64c9b6e8b01ffd4ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownerUnit: {fileID: 4787200179252613901}
+  ownerUnit: {fileID: 6341732451180285242}
 --- !u!54 &6472443768679729895
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -792,7 +792,7 @@ GameObject:
   - component: {fileID: 2693171781437784059}
   - component: {fileID: 4569522365748711682}
   - component: {fileID: 4533366331106798377}
-  - component: {fileID: 4787200179252613901}
+  - component: {fileID: 6341732451180285242}
   m_Layer: 2
   m_Name: TestUnit
   m_TagString: Untagged
@@ -883,7 +883,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4787200179252613901
+--- !u!114 &6341732451180285242
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -892,11 +892,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8496454203060108412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09af5b67dd4d4df4180d22a5c3d56f80, type: 3}
+  m_Script: {fileID: 11500000, guid: a8532a988cbd26542836b72d68238811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _objectType: 0
   _AssignedPlayer: 1
-  UnitName: Bob
+  UnitName: Pawn
+  UnitDescription: The base Unit in the game
   OccupiedTile: {fileID: 0}
   Faction: 0
   Moves:
@@ -905,22 +907,24 @@ MonoBehaviour:
   - {x: 1, y: 0}
   - {x: -1, y: 0}
   - {x: 0, y: -1}
-  _MaxHealth: 3
+  _MaxHealth: 5
   _CurrentHealth: 0
   _HealthBar: {fileID: 0}
   _ATBMoveCost: 5
-  _ATBSpawnCost: 10
-  _ATBCombatCost: 5
+  _ATBSpawnCost: 15
+  _ATBCombatCost: 3
   autoAttackRange: 3
   CollisionGameObjects: {fileID: 8454702544029811323}
-  projectilePrefab: {fileID: 3038631225743543733, guid: 50e7ee8df3c55634c9aee92c27289d25,
-    type: 3}
-  projectileSpawnParent: {fileID: 2933853432048145674}
   autoAttackCooldown: 2
   rangeIndicator: {fileID: 6287823403316738805}
   moveSpeed: 3
   rotateSpeed: 360
   isMoving: 0
+  isAttacking: 0
+  nextAutoAttackTime: 0
+  projectilePrefab: {fileID: 3038631225743543733, guid: 50e7ee8df3c55634c9aee92c27289d25,
+    type: 3}
+  projectileSpawnParent: {fileID: 2933853432048145674}
 --- !u!1001 &3671879342493396668
 PrefabInstance:
   m_ObjectHideFlags: 0

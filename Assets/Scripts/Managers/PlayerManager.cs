@@ -9,7 +9,7 @@ public class PlayerManager : Singleton<PlayerManager>
     public BaseUnit _UnitInHand;
     public GameObject _BaseUnitGameObject;
     public BaseUnit _SelectedUnit;
-    public List<Vector2> _StartingSpawningTiles; //Tiles the player is allowed to spawn units on after buying
+    public List<Vector2> _StartingSpawningTiles; // Tiles the player is allowed to spawn units on after buying
 
     public List<Tile> _SelectedUnitsTilesMovement;
 
@@ -18,13 +18,12 @@ public class PlayerManager : Singleton<PlayerManager>
 
     private void Start()
     {
-        //Marks the starting tiles for the starting player
-        //GridManager.Instance.MakeTilesSpawnable(_StartingSpawningTiles);
+        // Example: GridManager.Instance.MakeRowTilesSpawnable(1);
     }
 
     private void Update()
     {
-        // RayCastDebbuger
+        // Debugger Raycast
         if (GameManager.Instance._DebuggerMode)
         {
             if (Input.GetMouseButtonDown(0)) // Left mouse click
@@ -41,17 +40,24 @@ public class PlayerManager : Singleton<PlayerManager>
             }
         }
 
+        // If the player is holding a unit in hand and not hovering over a tile
         if (_HasUnitInHand && !_UnitHoverOverTile)
         {
-            // Set the position of the unit in hand to follow the mouse cursor
-            Vector3 mousePosition = Input.mousePosition; // Get mouse position in screen space
-            mousePosition.z = Camera.main.WorldToScreenPoint(_UnitInHand.transform.position).z; // Maintain the current Z-depth
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition); // Convert screen space to world space
-            _UnitInHand.gameObject.transform.position = new Vector3(worldPosition.x, worldPosition.y, _UnitInHand.transform.position.z);
+            // Make the unit follow the mouse
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z = Camera.main.WorldToScreenPoint(_UnitInHand.transform.position).z;
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            _UnitInHand.gameObject.transform.position = new Vector3(
+                worldPosition.x,
+                worldPosition.y,
+                _UnitInHand.transform.position.z
+            );
         }
 
-        if (_SelectedUnit != null) // shows the selected unit in the menu
+        //TODO: Move this away from the Update method
+        if (_SelectedUnit != null)
         {
+            // Show the selected unit in UI
             MenuManager.Instance.ShowSelectedHero(_SelectedUnit);
         }
         else
@@ -62,28 +68,28 @@ public class PlayerManager : Singleton<PlayerManager>
 
     public void InitializePlayerData()
     {
-        GridManager.Instance.MakeRowTilesSpawnable(1);
+        // Example: GridManager.Instance.MakeRowTilesSpawnable(1);
     }
 
-    // To be called by the multiplayer manager to set the correct player number to this player
     public void SetPlayerNumber(int i)
     {
         _PlayerNumber = i;
     }
 
-    // Method that clears all units selected and in hand
+    /// <summary>
+    /// Clears both the unit in hand and the selected unit.
+    /// </summary>
     public void ClearAll()
     {
         EmptyHand();
         ClearSelectedUnit();
     }
 
-    // Sets the unit in hand and allows the player to move it to a selected square
-    public void SetUnitInHand(BaseUnit _unit, GameObject _GameObj)
+    public void SetUnitInHand(BaseUnit unit, GameObject unitGameObj)
     {
         ClearAll();
-        _UnitInHand = _unit;
-        _BaseUnitGameObject = _GameObj;
+        _UnitInHand = unit;
+        _BaseUnitGameObject = unitGameObj;
         _HasUnitInHand = true;
 
         // Optional: Disable unit interaction while it's in hand
@@ -91,66 +97,62 @@ public class PlayerManager : Singleton<PlayerManager>
         MenuManager.Instance.ShowSelectedHero(_UnitInHand);
     }
 
-    public void SetUnitSelected(BaseUnit _unit)
+    public void SetUnitSelected(BaseUnit unit)
     {
         ClearAll();
         EmptyHand();
-        _SelectedUnit = _unit;
-        SelectedForMovement();
-        SelectedForCombat();
-    }
+        _SelectedUnit = unit;
+        _SelectedUnit.OnSelectiion();
 
-    // Sets all tiles the player can move to as movable options
-    private void SelectedForMovement()
-    {
-        if (_SelectedUnit != null)
+        //TODO: Move the logic here to the individual character and structure scripts
+
+        if (unit._Type == BaseUnitType.Character)
         {
-            _SelectedUnit.ToggleAutoAttackRangeVisual(true);
-
-            // Ensure _SelectedUnitsTilesMovement is not null
-            if (_SelectedUnitsTilesMovement == null)
-            {
-                _SelectedUnitsTilesMovement = new List<Tile>();
-            }
-
-            _SelectedUnitsTilesMovement = GridManager.Instance.GetAllTilesInRange(_SelectedUnit.Moves, _SelectedUnit.OccupiedTile, true);
-            foreach (Tile t in _SelectedUnitsTilesMovement)
-            {
-                t.SetSelectedTile(true);
-            }
+            
         }
+        else if (unit._Type == BaseUnitType.Structure)
+        {
+            //TODO: Create logic when structure is selected
+        }        
     }
 
-    // Selects all tiles the player uses for combat
-    private void SelectedForCombat()
-    {
-        // You could implement similar logic for tiles related to combat
-        // as you do for movement tiles.
-    }
+    //Remove this logic and just call the OnSelected method for the base unit
+    //private void SelectedForMovement()
+    //{
+    //    if (_SelectedUnit != null)
+    //    {
+    //        _SelectedUnit.ToggleAutoAttackRangeVisual(true);
+
+    //        if (_SelectedUnitsTilesMovement == null)
+    //            _SelectedUnitsTilesMovement = new List<Tile>();
+
+    //        _SelectedUnitsTilesMovement = GridManager.Instance.GetAllTilesInRange(
+    //            _SelectedUnit.Moves,
+    //            _SelectedUnit.OccupiedTile,
+    //            true
+    //        );
+
+    //        foreach (Tile t in _SelectedUnitsTilesMovement)
+    //        {
+    //            t.SetSelectedTile(true);
+    //        }
+    //    }
+    //}
+
+    //private void SelectedForCombat()
+    //{
+    //    // If you have a system to highlight tiles for combat,
+    //    // you can add similar logic to show them here.
+    //}
 
     public void ClearSelectedUnit()
     {
-        // Safely clear the movement tiles if they exist
-        if (_SelectedUnitsTilesMovement != null)
-        {
-            foreach (Tile t in _SelectedUnitsTilesMovement)
-            {
-                if (t != null) t.SetSelectedTile(false);
-            }
-            _SelectedUnitsTilesMovement.Clear();
-        }
+        if(_SelectedUnit != null)
+            _SelectedUnit.ClearSelection();
 
-        // Safely toggle off the auto-attack range if _SelectedUnit is not null
-        if (_SelectedUnit != null)
-        {
-            _SelectedUnit.ToggleAutoAttackRangeVisual(false);
-        }
-
-        // Finally, set _SelectedUnit to null
         _SelectedUnit = null;
     }
 
-    // Clears the unit from the player's hand
     public void EmptyHand()
     {
         if (_UnitInHand != null)

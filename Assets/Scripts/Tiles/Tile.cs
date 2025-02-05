@@ -79,37 +79,31 @@ public class Tile : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0)) // Left-click
         {
-            // Case 1: There's already a unit on this tile
+            // CASE 1: There's already a unit on this tile
             if (occupiedUnit != null)
             {
-                // If the occupant is still moving, don't allow selection
-                if (occupiedUnit.isMoving)
+                if (occupiedUnit is Character characterOccupant)
                 {
-                    Debug.Log("Unit is currently moving; cannot select yet.");
-                    return;
+                    OnMouseDown_CharacterOccupied(characterOccupant);
                 }
-
-                // If we're in combat or something else
-                if (_CombatTile && PlayerManager.Instance._SelectedUnit != null)
+                else if (occupiedUnit is Structure structureOccupant)
                 {
-                    Debug.Log("Combat!!");
-                }
-                else
-                {
-                    // Select the unit
-                    PlayerManager.Instance.SetUnitSelected(occupiedUnit);
+                    OnMouseDown_StructureOccupied(structureOccupant);
                 }
             }
-            // Case 2: This tile is empty, but there's a selected unit wanting to move here
+            // CASE 2: Tile is empty, but a unit is selected
             else if (PlayerManager.Instance._SelectedUnit != null && _Selected)
             {
-                if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._SelectedUnit._ATBMoveCost))
+                if (PlayerManager.Instance._SelectedUnit is Character characterSelected)
                 {
-                    SetUnit(PlayerManager.Instance._SelectedUnit);
-                    PlayerManager.Instance.ClearAll();
+                    OnMouseDown_EmptyWithCharacter(characterSelected);
+                }
+                else if (PlayerManager.Instance._SelectedUnit is Structure structureSelected)
+                {
+                    OnMouseDown_EmptyWithStructure(structureSelected);
                 }
             }
-            // Case 3: If the player has a unit in hand and tile is spawnable
+            // CASE 3: If the player has a unit in hand and tile is spawnable
             else
             {
                 if (PlayerManager.Instance._HasUnitInHand && _Spawnable)
@@ -120,6 +114,77 @@ public class Tile : MonoBehaviour
         }
     }
 
+    // ------------------------------------------------------------------------
+    // OCCUPIED TILE: CHARACTER
+    // ------------------------------------------------------------------------
+    private void OnMouseDown_CharacterOccupied(Character occupant)
+    {
+        // If occupant is mid-action, disallow selection
+        if (occupant.isMoving)
+        {
+            Debug.Log("Character is currently moving; cannot select yet.");
+            return;
+        }
+        if (occupant.isAttacking)
+        {
+            Debug.Log("Character is currently attacking; cannot select yet.");
+            return;
+        }
+
+        // If tile is flagged as a combat tile
+        if (_Combat && PlayerManager.Instance._SelectedUnit != null)
+        {
+            Debug.Log("Combat tile clicked.");
+        }
+        else
+        {
+            // Select the occupant (a Character)
+            PlayerManager.Instance.SetUnitSelected(occupant);
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // OCCUPIED TILE: STRUCTURE
+    // ------------------------------------------------------------------------
+    private void OnMouseDown_StructureOccupied(Structure occupant)
+    {
+        // For structures, we typically don’t have isMoving/isAttacking checks,
+        // but you could add your own "isConstructing" or some other status.
+
+        // Example: Just select the structure
+        PlayerManager.Instance.SetUnitSelected(occupant);
+    }
+
+    // ------------------------------------------------------------------------
+    // EMPTY TILE BUT SELECTED UNIT: CHARACTER
+    // ------------------------------------------------------------------------
+    private void OnMouseDown_EmptyWithCharacter(Character selectedCharacter)
+    {
+        // Attempt to pay movement cost, then place the character
+        if (ATBManager.Instance.PayATBCost(selectedCharacter._ATBMoveCost))
+        {
+            SetUnit(selectedCharacter);
+            PlayerManager.Instance.ClearAll();
+        }
+        else
+        {
+            Debug.Log("Cannot afford movement cost.");
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // EMPTY TILE BUT SELECTED UNIT: STRUCTURE
+    // ------------------------------------------------------------------------
+    private void OnMouseDown_EmptyWithStructure(Structure selectedStructure)
+    {
+        // Typically, structures can’t move
+        // So maybe do nothing or just show a message
+        Debug.Log("Structures cannot move.");
+    }
+
+    // ------------------------------------------------------------------------
+    // SETTING & SPAWNING
+    // ------------------------------------------------------------------------
     public void SetUnit(BaseUnit unit)
     {
         // Clear old occupant
@@ -130,13 +195,16 @@ public class Tile : MonoBehaviour
         occupiedUnit = unit;
         unit.SetTile(this);
 
-        // Move the unit to this tile's position (smoothly handled by unit)
-        unit.MoveToTile(this);
+        // If it's a Character, call the movement logic
+        if (unit is Character character)
+        {
+            character.MoveToTile(this);
+        }
     }
 
     public void SpawnUnit(BaseUnit unit)
     {
-        if (ATBManager.Instance.PayATBCost(PlayerManager.Instance._UnitInHand._ATBSpawnCost))
+        if (ATBManager.Instance.PayATBCost(unit._ATBSpawnCost))
         {
             // Clear old occupant
             if (unit.OccupiedTile != null)
@@ -146,8 +214,11 @@ public class Tile : MonoBehaviour
             occupiedUnit = unit;
             unit.SetTile(this);
 
-            // Move the unit to this tile's position
-            unit.MoveToTile(this);
+            // Move if it's a Character
+            if (unit is Character character)
+            {
+                character.MoveToTile(this);
+            }
 
             PlayerManager.Instance.EmptyHand();
         }
@@ -157,6 +228,9 @@ public class Tile : MonoBehaviour
         }
     }
 
+    // ------------------------------------------------------------------------
+    // OTHER UTILITY
+    // ------------------------------------------------------------------------
     public void RemoveUnitFromHand()
     {
         UnitManager.Instance.ReturnTestUnit();

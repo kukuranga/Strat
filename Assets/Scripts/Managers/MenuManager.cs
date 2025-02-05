@@ -6,7 +6,14 @@ using UnityEngine.UI;
 
 public class MenuManager : Singleton<MenuManager>
 {
+    //TODO: Make object groups fot the gameobjects (headers like in base unit)
+
     [SerializeField] private GameObject _selectedObjectHero, _TileObject,_TileUnitObject, _ObjectiveAnouncemetBanner;
+
+    [Header("Ability UI")]
+    [SerializeField] private GameObject _AbilityUI;
+    //[SerializeField] private Button _Ability1, _Ability2;
+    
 
     public void ShowTileInfo(Tile tile)
     {
@@ -35,11 +42,13 @@ public class MenuManager : Singleton<MenuManager>
         }
         _selectedObjectHero.GetComponentInChildren<TextMeshProUGUI>().text = _Unit.UnitName;
         _selectedObjectHero.SetActive(true);
+        _AbilityUI.SetActive(true);
     }
 
     public void ClearSelectedHero()
     {
         _selectedObjectHero.SetActive(false);
+        _AbilityUI.SetActive(false);
     }
 
     public void ShowObjectiveBanner()

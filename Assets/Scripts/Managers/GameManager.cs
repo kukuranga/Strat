@@ -33,6 +33,8 @@ public class GameManager : Singleton<GameManager>
             case GameState.SetObjective:
                 //start the object setup 
                 ObjectiveManager.Instance.GetRandomObjective();
+                GridManager.Instance.MakeRowTilesSpawnable(1); //Todo: Chnage this to only work with the first structure
+                GridManager.Instance.MakeRowTilesSpawnable(0);
                 break;
             case GameState.PlaceStartingUnits:
                 GameManager.Instance.UpdateGameState(GameState.GameplayLoop);

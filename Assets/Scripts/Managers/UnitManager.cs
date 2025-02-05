@@ -14,7 +14,7 @@ public class UnitManager : Singleton<UnitManager>
 {
     
     private List<ScriptableUnit> _units;
-    public BaseHero SelectedHero;
+    //public BaseHero SelectedHero;
 
 
     //todo: create an object pooling of the TestHero prefabs
@@ -64,9 +64,9 @@ public class UnitManager : Singleton<UnitManager>
         return (T)_units.Where(u => u.Faction == faction).OrderBy(o => Random.value).First().unitPrefab;
     }
 
-    public void SetSelectedHero(BaseHero hero)
-    {
-        SelectedHero = hero;
-        //MenuManager.Instance.ShowSelectedHero(hero); //Chnage this to use base unit instead of base hero
-    }
+    //public void SetSelectedHero(BaseHero hero)
+    //{
+    //    SelectedHero = hero;
+    //    //MenuManager.Instance.ShowSelectedHero(hero); //Chnage this to use base unit instead of base hero
+    //}
 }

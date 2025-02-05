@@ -2,7 +2,21 @@
 -COLORFULL VISUALS AND QUICK MOVEMENTS
 -PLEANTY OF EFFECTS
 
+-----PRIORITY---------
+- Chnaging the base unit class
+- Making it accomodate Buildings
+- Making a basic unit spawner
+- And the base unit to spawn
+- Randomly placing it on the map oposite the player
+
 -----Pending------
+
+-BaseUnit Changes
+	-Add a different check for Object or Unit, if its a unit allow it to move and attack
+	 But as an object it cannot. this
+
+-change the base unit class to fit the role of base unit rather than the role of the test unit
+	-change combat to be held in the base unit rather than the autoattack logic.(maybe)
 
 -Make a marker on the atb guage to show the amount needed to place the unit //Maybe make a red outline
 
@@ -33,6 +47,8 @@ Start Working on audio by stealing the other audio Manager
 
 -Make the zoom in and out use the scroll wheel
 
+-Change how movement works
+
 //Lightining Notes//
 -Create 2 more lightning preSets to be used
 -Can be moved to the unit effecteds position
@@ -43,6 +59,8 @@ Start Working on audio by stealing the other audio Manager
 
 //----BUGS---//
 
+-Movement, when the unit can move 2 spaces but the closest one is not moveable make it
+	stop the movement ability pased that point
 
 //---TODO--//
 
