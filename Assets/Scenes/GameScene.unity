@@ -1569,7 +1569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe005b44bf2a5842b6ef95cdfcc9dbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mountainSpawnRatio: 6
+  _mountainSpawnRatio: 100
   width: 21
   height: 15
   _grassTile: {fileID: 4196839373690181156, guid: 409adbee1047de547b4cce0365226588,
@@ -1715,7 +1715,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d2e2ff07675e542afb57e8dab1d107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SelectedHero: {fileID: 0}
   _TestObjects: {fileID: 1547258909}
   _ObjectSpawnPoints: {fileID: 1930302887}
 --- !u!1 &853711820

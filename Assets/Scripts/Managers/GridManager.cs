@@ -191,4 +191,17 @@ public class GridManager : Singleton<GridManager>
 
         return moveableTiles;
     }
+
+    public Tile GetTileAtCord(Vector2 _cord)
+    {
+        if (_tiles.TryGetValue(_cord, out Tile tile))
+        {
+            return tile;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
 }

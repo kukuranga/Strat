@@ -66,3 +66,4 @@ public enum GameState
     GameplayLoop = 3,
     EndGame = 4,
 }
+

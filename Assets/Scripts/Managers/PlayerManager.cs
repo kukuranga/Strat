@@ -116,35 +116,6 @@ public class PlayerManager : Singleton<PlayerManager>
         }        
     }
 
-    //Remove this logic and just call the OnSelected method for the base unit
-    //private void SelectedForMovement()
-    //{
-    //    if (_SelectedUnit != null)
-    //    {
-    //        _SelectedUnit.ToggleAutoAttackRangeVisual(true);
-
-    //        if (_SelectedUnitsTilesMovement == null)
-    //            _SelectedUnitsTilesMovement = new List<Tile>();
-
-    //        _SelectedUnitsTilesMovement = GridManager.Instance.GetAllTilesInRange(
-    //            _SelectedUnit.Moves,
-    //            _SelectedUnit.OccupiedTile,
-    //            true
-    //        );
-
-    //        foreach (Tile t in _SelectedUnitsTilesMovement)
-    //        {
-    //            t.SetSelectedTile(true);
-    //        }
-    //    }
-    //}
-
-    //private void SelectedForCombat()
-    //{
-    //    // If you have a system to highlight tiles for combat,
-    //    // you can add similar logic to show them here.
-    //}
-
     public void ClearSelectedUnit()
     {
         if(_SelectedUnit != null)

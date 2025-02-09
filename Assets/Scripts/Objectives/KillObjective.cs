@@ -7,6 +7,9 @@ public class KillObjective : BaseObjective
     public GameObject SpawnerPrefab;
     private int currentKills;
 
+    // Example coordinate for spawner. You can expose this or randomize it.
+    public Vector2 spawnerCoordinates = new Vector2(2, 2);
+
     public override bool IsObjectiveComplete()
     {
         return currentKills >= RequiredKills;
@@ -15,21 +18,71 @@ public class KillObjective : BaseObjective
     public override void InitializeObjective()
     {
         base.InitializeObjective();
-        //Spawn the spawnerObject
-        currentKills = 0; // Reset progress
+
+        // 1) Pick the tile for placing the spawner
+        Tile spawnTile = GridManager.Instance.GetTileAtCord(spawnerCoordinates);
+
+        if (spawnTile == null)
+        {
+            Debug.LogWarning($"KillObjective: No tile found at coords {spawnerCoordinates}!");
+        }
+        else if (spawnTile.occupiedUnit != null)
+        {
+            Debug.LogWarning($"KillObjective: Tile {spawnerCoordinates} is occupied, cannot spawn spawner!");
+        }
+        else
+        {
+            // 2) Instantiate the spawner prefab at the tile's position
+            GameObject spawnerObj = Instantiate(
+                SpawnerPrefab,
+                spawnTile.transform.position,
+                Quaternion.identity
+            );
+
+            // Force the Z-axis to -1
+            Vector3 newPos = spawnerObj.transform.position;
+            newPos.z = -1f;
+            spawnerObj.transform.position = newPos;
+
+            // 3) Attach as a BaseUnit occupant on the tile
+            BaseUnit spawnerUnit = spawnerObj.GetComponent<BaseUnit>();
+            if (spawnerUnit != null)
+            {
+                spawnTile.SetUnit(spawnerUnit);
+
+                // 4) Now that OccupiedTile is set, call InitializeSpawner()
+                Spawner spawnerScript = spawnerObj.GetComponent<Spawner>();
+                if (spawnerScript != null)
+                {
+                    spawnerScript.InitializeSpawner();
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        "KillObjective: SpawnerPrefab has a BaseUnit but no 'Spawner' script to initialize."
+                    );
+                }
+            }
+            else
+            {
+                Debug.LogWarning("KillObjective: SpawnerPrefab has no BaseUnit component! Can't attach to tile.");
+            }
+        }
+
+        // Reset kill progress
+        currentKills = 0;
         Debug.Log($"Kill {RequiredKills} enemies to complete the objective.");
     }
 
     // Call this method to update kills (e.g., from combat logic)
     public void AddKill()
     {
-        //ToDo: Figure out how to check this data during the games stats
         currentKills++;
         Debug.Log($"Kill progress: {currentKills}/{RequiredKills}");
     }
 
     public override void ObjectiveUpdate()
     {
-        //this function to be called each frame during the gameloop;
+        // Called each frame or periodically
     }
 }

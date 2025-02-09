@@ -15,7 +15,6 @@ public class BaseUnit : MonoBehaviour
     public string UnitDescription;
     public Tile OccupiedTile;
     public Faction Faction;
-    public List<Vector2> Moves; // Common move definitions or stats
 
     [Header("Health")]
     public int _MaxHealth;

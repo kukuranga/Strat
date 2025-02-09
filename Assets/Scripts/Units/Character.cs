@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class Character : BaseUnit
 {
-
     [Header("Movement")]
     public float _ATBMoveCost = 5;
     public float moveSpeed = 3f;
     public float rotateSpeed = 360f;
+    public List<Vector2> Moves; // Common move definitions or stats
     public bool isMoving = false;
     public List<Tile> _SelectedUnitsTilesMovement;
-
 
     [Header("Attack")]
     public float _ATBCombatCost = 2f;  // Example cost to perform an auto-attack
@@ -24,9 +23,8 @@ public class Character : BaseUnit
     protected override void Start()
     {
         base.Start(); // Call BaseUnit Start
-
         _Type = BaseUnitType.Character;
-        // If you want a range indicator
+
         if (rangeIndicator != null)
         {
             rangeIndicator.transform.localScale = Vector3.one * (autoAttackRange * 2f);
@@ -43,11 +41,9 @@ public class Character : BaseUnit
     // --------------------------------------------------
     // Movement Logic
     // --------------------------------------------------
-    /// <summary>
-    /// Move to a target tile position, if not attacking.
-    /// </summary>
     public void MoveToTile(Tile targetTile)
     {
+        // Prevent movement while attacking
         if (isAttacking)
         {
             Debug.Log($"{UnitName} is attacking and cannot move yet.");
@@ -63,7 +59,7 @@ public class Character : BaseUnit
         if (ATBManager.Instance.GetATBAmount() < _ATBMoveCost)
         {
             Debug.Log("Not enough ATB to move.");
-            yield break; // <-- Immediately stop the coroutine
+            yield break;
         }
 
         isMoving = true;
@@ -111,29 +107,37 @@ public class Character : BaseUnit
         isMoving = false;
     }
 
-
     // --------------------------------------------------
     // Attack Logic
     // --------------------------------------------------
-    /// <summary>
-    /// Show or hide the attack range indicator.
-    /// </summary>
     public void ToggleAutoAttackRangeVisual(bool show)
     {
         if (rangeIndicator != null)
             rangeIndicator.SetActive(show);
     }
 
-    /// <summary>
-    /// Attempt an auto-attack on a HurtBox in range.
-    /// </summary>
     public virtual void TryAutoAttack(HurtBox hurtBox)
     {
+        // 1) Prevent attacking if we're still moving
+        if (isMoving)
+        {
+            Debug.Log($"{UnitName} is moving; cannot auto-attack yet.");
+            return;
+        }
 
+        // 2) Prevent attacking if we're already attacking or on cooldown
+        if (isAttacking || Time.time < nextAutoAttackTime)
+        {
+            Debug.Log($"{UnitName} is attacking or on cooldown; cannot auto-attack yet.");
+            return;
+        }
+
+        // 3) If we have enough ATB, actual attack logic goes here 
+        // (in child classes like 'Pawn' we do the real attack)
     }
 
     // --------------------------------------------------
-    // (Optional) Abilities
+    // Abilities
     // --------------------------------------------------
     public virtual void Ability1()
     {
@@ -148,9 +152,6 @@ public class Character : BaseUnit
     public override void OnSelectiion()
     {
         base.OnSelectiion();
-
-        //Todo: Move the activation section in the player manager to here
-        //also show all menu options available to the character
 
         ToggleAutoAttackRangeVisual(true);
 
@@ -173,8 +174,6 @@ public class Character : BaseUnit
     {
         base.ClearSelection();
 
-        //clear all the selected tiles by the on selected method
-
         if (_SelectedUnitsTilesMovement != null)
         {
             foreach (Tile t in _SelectedUnitsTilesMovement)
@@ -185,6 +184,5 @@ public class Character : BaseUnit
         }
 
         ToggleAutoAttackRangeVisual(false);
-
     }
 }
