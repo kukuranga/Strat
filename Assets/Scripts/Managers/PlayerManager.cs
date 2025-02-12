@@ -16,9 +16,20 @@ public class PlayerManager : Singleton<PlayerManager>
     public float fixedZPosition = -1f; // Fixed Z position for the unit in world space
     public bool _UnitHoverOverTile;
 
+    private Tile _destinationTile; // The tile the unit is moving towards
+    private LineRenderer _lineRenderer; // To draw the path to the destination
+
     private void Start()
     {
-        // Example: GridManager.Instance.MakeRowTilesSpawnable(1);
+        // Initialize the line renderer
+        GameObject lineObject = new GameObject("LineRenderer");
+        _lineRenderer = lineObject.AddComponent<LineRenderer>();
+        _lineRenderer.startWidth = 0.1f;
+        _lineRenderer.endWidth = 0.1f;
+        _lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        _lineRenderer.startColor = Color.yellow;
+        _lineRenderer.endColor = Color.yellow;
+        _lineRenderer.enabled = false;
     }
 
     private void Update()
@@ -52,6 +63,32 @@ public class PlayerManager : Singleton<PlayerManager>
                 worldPosition.y,
                 _UnitInHand.transform.position.z
             );
+        }
+
+        // If a unit is selected and the player clicks on a tile
+        if (_SelectedUnit != null && Input.GetMouseButtonDown(0)) // Left-click
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Tile tile = hit.collider.GetComponent<Tile>();
+                if (tile != null && tile.walkable)
+                {
+                    _destinationTile = tile;
+                    DrawPathToDestination(_destinationTile);
+
+                    // Check if the selected unit is a Character
+                    if (_SelectedUnit is Character character)
+                    {
+                        character.MoveToDestination(_destinationTile);
+                        ClearSelectedUnit(); // Unselect the unit after issuing movement
+                    }
+                    else
+                    {
+                        Debug.Log("Only characters can move.");
+                    }
+                }
+            }
         }
 
         //TODO: Move this away from the Update method
@@ -104,24 +141,25 @@ public class PlayerManager : Singleton<PlayerManager>
         _SelectedUnit = unit;
         _SelectedUnit.OnSelectiion();
 
-        //TODO: Move the logic here to the individual character and structure scripts
-
+        // If the selected unit is a character, highlight its movement tiles
         if (unit._Type == BaseUnitType.Character)
         {
-            
+            Character character = (Character)unit;
+            _SelectedUnitsTilesMovement = character._SelectedUnitsTilesMovement;
         }
         else if (unit._Type == BaseUnitType.Structure)
         {
             //TODO: Create logic when structure is selected
-        }        
+        }
     }
 
     public void ClearSelectedUnit()
     {
-        if(_SelectedUnit != null)
+        if (_SelectedUnit != null)
             _SelectedUnit.ClearSelection();
 
         _SelectedUnit = null;
+        _lineRenderer.enabled = false; // Hide the line renderer
     }
 
     public void EmptyHand()
@@ -136,5 +174,31 @@ public class PlayerManager : Singleton<PlayerManager>
         _BaseUnitGameObject = null;
         _HasUnitInHand = false;
         MenuManager.Instance.ClearSelectedHero();
+    }
+
+    private void DrawPathToDestination(Tile destinationTile)
+    {
+        if (_SelectedUnit == null || destinationTile == null)
+            return;
+
+        // Get the path from the selected unit's current tile to the destination tile
+        List<Tile> path = GridManager.Instance.GetPath(_SelectedUnit.OccupiedTile, destinationTile);
+
+        if (path != null && path.Count > 0)
+        {
+            _lineRenderer.positionCount = path.Count + 1;
+            _lineRenderer.SetPosition(0, _SelectedUnit.transform.position);
+
+            for (int i = 0; i < path.Count; i++)
+            {
+                _lineRenderer.SetPosition(i + 1, path[i].transform.position);
+            }
+
+            _lineRenderer.enabled = true;
+        }
+        else
+        {
+            _lineRenderer.enabled = false;
+        }
     }
 }

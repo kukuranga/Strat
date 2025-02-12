@@ -20,6 +20,11 @@ public class Character : BaseUnit
     public int _ATBCombatCost;
     public float autoAttackCooldown;
 
+    private AStarPathfinding _pathfinding;
+    private List<Tile> _currentPath;
+    private int _currentPathIndex;
+    private bool _waitingForATB = false; // Flag to indicate if we're waiting for ATB
+
     protected override void Start()
     {
         base.Start(); // Call BaseUnit Start
@@ -30,13 +35,14 @@ public class Character : BaseUnit
             rangeIndicator.transform.localScale = Vector3.one * (attack.attackRange * 2f); // Adjusting based on attack range
             rangeIndicator.SetActive(false);
         }
+
+        _pathfinding = new AStarPathfinding(GridManager.Instance);
     }
 
     protected override void Update()
     {
         base.Update();
         // Additional Character-specific update logic
-    
     }
 
     public virtual void Ability1()
@@ -60,15 +66,62 @@ public class Character : BaseUnit
         StartCoroutine(MoveUnitRoutine(targetTile.transform.position));
     }
 
-    private IEnumerator MoveUnitRoutine(Vector3 targetPos)
+    public void MoveToDestination(Tile destinationTile)
     {
-        // Check if we have enough ATB for movement
-        if (ATBManager.Instance.GetATBAmount() < _ATBMoveCost)
+        if (isAttacking)
         {
-            Debug.Log("Not enough ATB to move.");
-            yield break;
+            Debug.Log($"{UnitName} is attacking and cannot move yet.");
+            return;
         }
 
+        _currentPath = _pathfinding.FindPath(OccupiedTile, destinationTile);
+        if (_currentPath != null && _currentPath.Count > 0)
+        {
+            _currentPathIndex = 0;
+            StartCoroutine(FollowPath());
+        }
+        else
+        {
+            Debug.Log("No valid path found.");
+        }
+    }
+
+    private IEnumerator FollowPath()
+    {
+        isMoving = true;
+
+        while (_currentPathIndex < _currentPath.Count)
+        {
+            Tile nextTile = _currentPath[_currentPathIndex];
+
+            // Wait until there's enough ATB to move
+            while (ATBManager.Instance.GetATBAmount() < _ATBMoveCost)
+            {
+                _waitingForATB = true;
+                yield return null; // Wait for the next frame
+            }
+            _waitingForATB = false;
+
+            // Update the unit's occupied tile
+            if (OccupiedTile != null)
+            {
+                OccupiedTile.occupiedUnit = null; // Clear the old tile's occupant
+            }
+            nextTile.occupiedUnit = this; // Set the new tile's occupant
+            OccupiedTile = nextTile; // Update the unit's current tile
+
+            yield return StartCoroutine(MoveUnitRoutine(nextTile.transform.position));
+            _currentPathIndex++;
+
+            // Pay ATB cost after each step
+            ATBManager.Instance.PayATBCost(_ATBMoveCost);
+        }
+
+        isMoving = false;
+    }
+
+    private IEnumerator MoveUnitRoutine(Vector3 targetPos)
+    {
         isMoving = true;
 
         Vector3 startPos = transform.position;
@@ -176,6 +229,7 @@ public class Character : BaseUnit
 
         ToggleAutoAttackRangeVisual(false);
     }
+
     public IEnumerator RotateUnitTowards(Vector3 targetPos)
     {
         Vector3 direction = targetPos - transform.position;

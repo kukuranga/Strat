@@ -21,6 +21,12 @@ public class Tile : MonoBehaviour
     public bool _Selected = false;
     public bool _Combat = false;
 
+    // A* Pathfinding properties
+    public int GCost; // Cost from start to this tile
+    public int HCost; // Heuristic cost to target
+    public int FCost => GCost + HCost; // Total cost
+    public Tile Parent; // For pathfinding
+
     private void Update()
     {
         _SpawnableTile.SetActive(_Spawnable && PlayerManager.Instance._HasUnitInHand);
@@ -163,8 +169,7 @@ public class Tile : MonoBehaviour
         // Attempt to pay movement cost, then place the character
         if (ATBManager.Instance.PayATBCost(selectedCharacter._ATBMoveCost))
         {
-            SetUnit(selectedCharacter);
-            PlayerManager.Instance.ClearAll();
+            selectedCharacter.MoveToDestination(this);
         }
         else
         {

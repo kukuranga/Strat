@@ -204,4 +204,9 @@ public class GridManager : Singleton<GridManager>
         }
     }
 
+    public List<Tile> GetPath(Tile startTile, Tile endTile)
+    {
+        AStarPathfinding pathfinding = new AStarPathfinding(this);
+        return pathfinding.FindPath(startTile, endTile);
+    }
 }
