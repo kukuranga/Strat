@@ -69,27 +69,5 @@ public class Pawn : Character
         yield break;
     }
 
-    private IEnumerator RotateUnitTowards(Vector3 targetPos)
-    {
-        Vector3 direction = targetPos - transform.position;
-        direction.z = 0f;
-
-        if (direction.sqrMagnitude > 0.0001f)
-        {
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            angle -= 90f;
-            Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
-
-            while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
-            {
-                transform.rotation = Quaternion.RotateTowards(
-                    transform.rotation,
-                    targetRotation,
-                    rotateSpeed * Time.deltaTime
-                );
-                yield return null;
-            }
-            transform.rotation = targetRotation;
-        }
-    }
+   
 }

@@ -3,9 +3,6 @@
 -PLEANTY OF EFFECTS
 
 -----PRIORITY---------
-- Chnaging the base unit class
-- Making it accomodate Buildings
-- Making a basic unit spawner
 - And the base unit to spawn
 - Randomly placing it on the map oposite the player
 
@@ -44,6 +41,8 @@ Demo version
 	-set the object to spawn and attack the players units in range
 
 Start Working on audio by stealing the other audio Manager
+
+- Make the mage unit have a bonus damage when near each other
 
 -Make the zoom in and out use the scroll wheel
 

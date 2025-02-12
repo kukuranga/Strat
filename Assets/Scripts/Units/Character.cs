@@ -13,12 +13,12 @@ public class Character : BaseUnit
     public List<Tile> _SelectedUnitsTilesMovement;
 
     [Header("Attack")]
-    public float _ATBCombatCost = 2f;  // Example cost to perform an auto-attack
-    public float autoAttackRange = 3f;
-    public float autoAttackCooldown = 2f;
+    public Attack attack; // Scriptable Object reference to the attack logic
     public GameObject rangeIndicator;
     public bool isAttacking = false;
     public float nextAutoAttackTime = 0f;
+    public int _ATBCombatCost;
+    public float autoAttackCooldown;
 
     protected override void Start()
     {
@@ -27,7 +27,7 @@ public class Character : BaseUnit
 
         if (rangeIndicator != null)
         {
-            rangeIndicator.transform.localScale = Vector3.one * (autoAttackRange * 2f);
+            rangeIndicator.transform.localScale = Vector3.one * (attack.attackRange * 2f); // Adjusting based on attack range
             rangeIndicator.SetActive(false);
         }
     }
@@ -36,11 +36,19 @@ public class Character : BaseUnit
     {
         base.Update();
         // Additional Character-specific update logic
+    
     }
 
-    // --------------------------------------------------
-    // Movement Logic
-    // --------------------------------------------------
+    public virtual void Ability1()
+    {
+        Debug.Log($"{UnitName} uses Ability1.");
+    }
+
+    public virtual void Ability2()
+    {
+        Debug.Log($"{UnitName} uses Ability2.");
+    }
+
     public void MoveToTile(Tile targetTile)
     {
         // Prevent movement while attacking
@@ -49,7 +57,6 @@ public class Character : BaseUnit
             Debug.Log($"{UnitName} is attacking and cannot move yet.");
             return;
         }
-
         StartCoroutine(MoveUnitRoutine(targetTile.transform.position));
     }
 
@@ -108,45 +115,30 @@ public class Character : BaseUnit
     }
 
     // --------------------------------------------------
-    // Attack Logic
+    // Attack Logic (Replaced with Scriptable Object)
     // --------------------------------------------------
-    public void ToggleAutoAttackRangeVisual(bool show)
-    {
-        if (rangeIndicator != null)
-            rangeIndicator.SetActive(show);
-    }
-
     public virtual void TryAutoAttack(HurtBox hurtBox)
     {
-        // 1) Prevent attacking if we're still moving
         if (isMoving)
         {
             Debug.Log($"{UnitName} is moving; cannot auto-attack yet.");
             return;
         }
 
-        // 2) Prevent attacking if we're already attacking or on cooldown
         if (isAttacking || Time.time < nextAutoAttackTime)
         {
             Debug.Log($"{UnitName} is attacking or on cooldown; cannot auto-attack yet.");
             return;
         }
 
-        // 3) If we have enough ATB, actual attack logic goes here 
-        // (in child classes like 'Pawn' we do the real attack)
+        // Use the Scriptable Object Attack Logic
+        attack.PerformAttack(this, hurtBox);
     }
 
-    // --------------------------------------------------
-    // Abilities
-    // --------------------------------------------------
-    public virtual void Ability1()
+    public void ToggleAutoAttackRangeVisual(bool show)
     {
-        Debug.Log($"{UnitName} uses Ability1.");
-    }
-
-    public virtual void Ability2()
-    {
-        Debug.Log($"{UnitName} uses Ability2.");
+        if (rangeIndicator != null)
+            rangeIndicator.SetActive(show);
     }
 
     public override void OnSelectiion()
@@ -154,7 +146,6 @@ public class Character : BaseUnit
         base.OnSelectiion();
 
         ToggleAutoAttackRangeVisual(true);
-
         if (_SelectedUnitsTilesMovement == null)
             _SelectedUnitsTilesMovement = new List<Tile>();
 
@@ -184,5 +175,28 @@ public class Character : BaseUnit
         }
 
         ToggleAutoAttackRangeVisual(false);
+    }
+    public IEnumerator RotateUnitTowards(Vector3 targetPos)
+    {
+        Vector3 direction = targetPos - transform.position;
+        direction.z = 0f;
+
+        if (direction.sqrMagnitude > 0.0001f)
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            angle -= 90f;
+            Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
+
+            while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
+            {
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation,
+                    targetRotation,
+                    rotateSpeed * Time.deltaTime
+                );
+                yield return null;
+            }
+            transform.rotation = targetRotation;
+        }
     }
 }

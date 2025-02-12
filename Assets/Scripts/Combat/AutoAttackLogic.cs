@@ -19,7 +19,7 @@ public class AutoAttackLogic : MonoBehaviour
             if (parentUnit != null)
             {
                 // Match the parent's autoAttackRange
-                _sphereCollider.radius = parentUnit.autoAttackRange;
+                _sphereCollider.radius = parentUnit.attack.attackRange;
             }
         }
         else

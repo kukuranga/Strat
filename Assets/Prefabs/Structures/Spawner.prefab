@@ -973,8 +973,8 @@ MonoBehaviour:
   CollisionGameObjects: {fileID: 8454702544029811323}
   _Interactable: 0
   UnitsToSpawn:
-  - {fileID: 8496454203060108412, guid: 78fbddfb893416942af18829b32c03bb, type: 3}
-  - {fileID: 8496454203060108412, guid: 78fbddfb893416942af18829b32c03bb, type: 3}
+  - {fileID: 8496454203060108412, guid: 4b0c55c400d731d419d2a2d28b075688, type: 3}
+  - {fileID: 8496454203060108412, guid: 4b0c55c400d731d419d2a2d28b075688, type: 3}
   SpawnRange:
   - {x: 1, y: -1}
   - {x: 1, y: 0}

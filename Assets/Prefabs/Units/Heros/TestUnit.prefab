@@ -725,6 +725,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2933853432048145674}
+  - component: {fileID: 4060782698022719485}
   m_Layer: 2
   m_Name: AttackSpawnPos
   m_TagString: Untagged
@@ -747,6 +748,18 @@ Transform:
   m_Father: {fileID: 2111817808390648789}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4060782698022719485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7860829149587776574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd05532eb37308946a45c320b18be8f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8454702544029811323
 GameObject:
   m_ObjectHideFlags: 0
@@ -895,33 +908,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8532a988cbd26542836b72d68238811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectType: 0
+  _Type: 0
   _AssignedPlayer: 1
   UnitName: Pawn
   UnitDescription: The base Unit in the game
   OccupiedTile: {fileID: 0}
   Faction: 0
+  _MaxHealth: 5
+  _CurrentHealth: 0
+  _HealthBar: {fileID: 0}
+  _ATBSpawnCost: 15
+  CollisionGameObjects: {fileID: 8454702544029811323}
+  _Interactable: 0
+  _ATBMoveCost: 5
+  moveSpeed: 3
+  rotateSpeed: 360
   Moves:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
   - {x: 1, y: 0}
   - {x: -1, y: 0}
   - {x: 0, y: -1}
-  _MaxHealth: 5
-  _CurrentHealth: 0
-  _HealthBar: {fileID: 0}
-  _ATBMoveCost: 5
-  _ATBSpawnCost: 15
-  _ATBCombatCost: 3
-  autoAttackRange: 3
-  CollisionGameObjects: {fileID: 8454702544029811323}
-  autoAttackCooldown: 2
-  rangeIndicator: {fileID: 6287823403316738805}
-  moveSpeed: 3
-  rotateSpeed: 360
   isMoving: 0
+  _SelectedUnitsTilesMovement: []
+  attack: {fileID: 11400000, guid: 624ce8ac5d8f69046a4437371ca7b5fd, type: 2}
+  rangeIndicator: {fileID: 6287823403316738805}
   isAttacking: 0
   nextAutoAttackTime: 0
+  _ATBCombatCost: 3
+  autoAttackCooldown: 2
   projectilePrefab: {fileID: 3038631225743543733, guid: 50e7ee8df3c55634c9aee92c27289d25,
     type: 3}
   projectileSpawnParent: {fileID: 2933853432048145674}
