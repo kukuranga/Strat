@@ -8,9 +8,7 @@ public class Character : BaseUnit
     public float _ATBMoveCost = 5;
     public float moveSpeed = 3f;
     public float rotateSpeed = 360f;
-    public List<Vector2> Moves; // Common move definitions or stats
     public bool isMoving = false;
-    public List<Tile> _SelectedUnitsTilesMovement;
 
     [Header("Attack")]
     public Attack attack; // Scriptable Object reference to the attack logic
@@ -55,22 +53,36 @@ public class Character : BaseUnit
         Debug.Log($"{UnitName} uses Ability2.");
     }
 
-    public void MoveToTile(Tile targetTile)
+    public void MoveToDestination(Tile destinationTile)
     {
-        // Prevent movement while attacking
+        if (OccupiedTile == null)
+        {
+            Debug.LogError("OccupiedTile is null. Cannot move.");
+            return;
+        }
+
+        if (destinationTile == null)
+        {
+            Debug.LogError("Destination tile is null. Cannot move.");
+            return;
+        }
+
+        if (_pathfinding == null)
+        {
+            Debug.LogError("Pathfinding is not initialized. Cannot move.");
+            return;
+        }
+
         if (isAttacking)
         {
             Debug.Log($"{UnitName} is attacking and cannot move yet.");
             return;
         }
-        StartCoroutine(MoveUnitRoutine(targetTile.transform.position));
-    }
 
-    public void MoveToDestination(Tile destinationTile)
-    {
-        if (isAttacking)
+        // Check if the destination tile is occupied
+        if (destinationTile.occupiedUnit != null)
         {
-            Debug.Log($"{UnitName} is attacking and cannot move yet.");
+            Debug.LogWarning($"Destination tile at {destinationTile._coordinates} is occupied. Cannot move.");
             return;
         }
 
@@ -93,6 +105,13 @@ public class Character : BaseUnit
         while (_currentPathIndex < _currentPath.Count)
         {
             Tile nextTile = _currentPath[_currentPathIndex];
+
+            // Check if the next tile is occupied
+            if (nextTile.occupiedUnit != null)
+            {
+                Debug.LogWarning($"Tile at {nextTile._coordinates} is occupied. Stopping movement.");
+                break;
+            }
 
             // Wait until there's enough ATB to move
             while (ATBManager.Instance.GetATBAmount() < _ATBMoveCost)
@@ -199,33 +218,11 @@ public class Character : BaseUnit
         base.OnSelectiion();
 
         ToggleAutoAttackRangeVisual(true);
-        if (_SelectedUnitsTilesMovement == null)
-            _SelectedUnitsTilesMovement = new List<Tile>();
-
-        _SelectedUnitsTilesMovement = GridManager.Instance.GetAllTilesInRange(
-            Moves,
-            OccupiedTile,
-            true
-        );
-
-        foreach (Tile t in _SelectedUnitsTilesMovement)
-        {
-            t.SetSelectedTile(true);
-        }
     }
 
     public override void ClearSelection()
     {
         base.ClearSelection();
-
-        if (_SelectedUnitsTilesMovement != null)
-        {
-            foreach (Tile t in _SelectedUnitsTilesMovement)
-            {
-                if (t != null) t.SetSelectedTile(false);
-            }
-            _SelectedUnitsTilesMovement.Clear();
-        }
 
         ToggleAutoAttackRangeVisual(false);
     }

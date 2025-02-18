@@ -48,7 +48,7 @@ public class KillObjective : BaseObjective
             BaseUnit spawnerUnit = spawnerObj.GetComponent<BaseUnit>();
             if (spawnerUnit != null)
             {
-                spawnTile.SetUnit(spawnerUnit);
+                spawnTile.SetUnit(spawnerUnit, false);
 
                 // 4) Now that OccupiedTile is set, call InitializeSpawner()
                 Spawner spawnerScript = spawnerObj.GetComponent<Spawner>();

@@ -11,8 +11,6 @@ public class PlayerManager : Singleton<PlayerManager>
     public BaseUnit _SelectedUnit;
     public List<Vector2> _StartingSpawningTiles; // Tiles the player is allowed to spawn units on after buying
 
-    public List<Tile> _SelectedUnitsTilesMovement;
-
     public float fixedZPosition = -1f; // Fixed Z position for the unit in world space
     public bool _UnitHoverOverTile;
 
@@ -140,17 +138,6 @@ public class PlayerManager : Singleton<PlayerManager>
         EmptyHand();
         _SelectedUnit = unit;
         _SelectedUnit.OnSelectiion();
-
-        // If the selected unit is a character, highlight its movement tiles
-        if (unit._Type == BaseUnitType.Character)
-        {
-            Character character = (Character)unit;
-            _SelectedUnitsTilesMovement = character._SelectedUnitsTilesMovement;
-        }
-        else if (unit._Type == BaseUnitType.Structure)
-        {
-            //TODO: Create logic when structure is selected
-        }
     }
 
     public void ClearSelectedUnit()

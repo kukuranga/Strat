@@ -190,7 +190,7 @@ public class Tile : MonoBehaviour
     // ------------------------------------------------------------------------
     // SETTING & SPAWNING
     // ------------------------------------------------------------------------
-    public void SetUnit(BaseUnit unit)
+    public void SetUnit(BaseUnit unit, bool init)
     {
         // Clear old occupant
         if (unit.OccupiedTile != null)
@@ -201,9 +201,23 @@ public class Tile : MonoBehaviour
         unit.SetTile(this);
 
         // If it's a Character, call the movement logic
-        if (unit is Character character)
+        if (unit is Character character && init)
         {
-            character.MoveToTile(this);
+            if (character.OccupiedTile == null)
+            {
+                Debug.LogError("Character's OccupiedTile is null. Cannot move.");
+                return;
+            }
+
+            // Ensure the destination tile is walkable
+            if (this.walkable)
+            {
+                character.MoveToDestination(this);
+            }
+            else
+            {
+                Debug.LogWarning($"Destination tile at {this._coordinates} is not walkable. Unit will not move.");
+            }
         }
     }
 
@@ -222,7 +236,7 @@ public class Tile : MonoBehaviour
             // Move if it's a Character
             if (unit is Character character)
             {
-                character.MoveToTile(this);
+                character.MoveToDestination(this); // Use MoveToDestination instead of MoveToTile
             }
 
             PlayerManager.Instance.EmptyHand();

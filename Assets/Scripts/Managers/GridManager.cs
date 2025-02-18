@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class GridManager : Singleton<GridManager>
 {
     [SerializeField] private int _mountainSpawnRatio;
-    [SerializeField] private int width, height;
+    [SerializeField] public int width, height;
     [SerializeField] private Tile _grassTile, _mountainTile;
     [SerializeField] private Transform _cam;
     [SerializeField] private float cameraAngle = 50f; // Initial camera angle
@@ -173,7 +173,7 @@ public class GridManager : Singleton<GridManager>
         }
     }
 
-    //returns all tiles that are moveable with a given range from the starting tile
+    // Returns all tiles that are moveable with a given range from the starting tile
     public List<Tile> GetAllTilesInRange(List<Vector2> movementOffsets, Tile startTile, bool _Moveable)
     {
         List<Tile> moveableTiles = new List<Tile>();
@@ -200,12 +200,32 @@ public class GridManager : Singleton<GridManager>
         }
         else
         {
+            Debug.LogWarning($"Tile at coordinates {_cord} not found.");
             return null;
         }
     }
 
+    // New method to get all tiles in the grid
+    public Dictionary<Vector2, Tile> GetAllTiles()
+    {
+        if (_tiles == null)
+        {
+            Debug.LogError("Tiles dictionary is not initialized. Make sure GenerateGrid() is called before this method.");
+            return new Dictionary<Vector2, Tile>();
+        }
+
+        return _tiles;
+    }
+
+    // New method to get a path between two tiles using A* pathfinding
     public List<Tile> GetPath(Tile startTile, Tile endTile)
     {
+        if (startTile == null || endTile == null)
+        {
+            Debug.LogError("Start tile or end tile is null. Cannot find path.");
+            return new List<Tile>();
+        }
+
         AStarPathfinding pathfinding = new AStarPathfinding(this);
         return pathfinding.FindPath(startTile, endTile);
     }

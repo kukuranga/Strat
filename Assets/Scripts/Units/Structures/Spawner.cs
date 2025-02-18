@@ -7,10 +7,6 @@ public class Spawner : Structure
     // Prefabs that can be spawned
     public List<GameObject> UnitsToSpawn;
 
-    // A list of Vector2 offsets from the spawner's tile
-    // used by GridManager's GetAllTilesInRange
-    public List<Vector2> SpawnRange;
-
     // How often (in seconds) we spawn
     public float Interval = 5f;
 
@@ -18,7 +14,7 @@ public class Spawner : Structure
     [Tooltip("Maximum total units this spawner can produce. If 0 or negative, spawns infinitely.")]
     public int maxSpawnCount = 5;
 
-    // We'll store the tile references returned by GetAllTilesInRange
+    // We'll store the tile references returned by A* pathfinding
     private List<Tile> SpawnLocations = new List<Tile>();
 
     // Tracks how many units have been spawned so far
@@ -39,13 +35,10 @@ public class Spawner : Structure
             return;
         }
 
-        // 2) Use the GridManager method to get all tiles in range from the spawner's tile
-        //    Set _Moveable to false if you don't need them to be walkable.
-        SpawnLocations = GridManager.Instance.GetAllTilesInRange(
-            SpawnRange,
-            OccupiedTile,
-            false // or true if you only want walkable tiles
-        );
+        // 2) Use A* pathfinding to find all reachable tiles within a certain range
+        //    For simplicity, we'll assume a fixed range (e.g., 3 tiles)
+        int spawnRange = 3;
+        SpawnLocations = GetTilesInRange(spawnRange);
 
         if (SpawnLocations.Count == 0)
         {
@@ -55,6 +48,40 @@ public class Spawner : Structure
 
         // 3) Begin spawning - one unit each cycle until we reach max
         StartCoroutine(SpawnRoutine());
+    }
+
+    /// <summary>
+    /// Finds all tiles within a given range using A* pathfinding.
+    /// </summary>
+    private List<Tile> GetTilesInRange(int range)
+    {
+        List<Tile> tilesInRange = new List<Tile>();
+        AStarPathfinding pathfinding = new AStarPathfinding(GridManager.Instance);
+
+        // Get all tiles from the GridManager
+        Dictionary<Vector2, Tile> allTiles = GridManager.Instance.GetAllTiles();
+
+        // Iterate through all tiles in the grid
+        foreach (var tilePair in allTiles)
+        {
+            Tile tile = tilePair.Value;
+
+            // Skip if the tile is not walkable or already occupied
+            if (!tile.walkable || tile.occupiedUnit != null)
+                continue;
+
+            // Calculate the distance from the spawner's tile to the current tile
+            int distance = Mathf.Abs(tile._coordinates.x - OccupiedTile._coordinates.x) +
+                           Mathf.Abs(tile._coordinates.y - OccupiedTile._coordinates.y);
+
+            // If the tile is within range, add it to the list
+            if (distance <= range)
+            {
+                tilesInRange.Add(tile);
+            }
+        }
+
+        return tilesInRange;
     }
 
     private IEnumerator SpawnRoutine()
@@ -91,9 +118,9 @@ public class Spawner : Structure
 
         // Pick a random free tile
         Tile randomTile = GetRandomFreeTile();
-        if (randomTile == null)
+        if (randomTile == null || !randomTile.walkable)
         {
-            Debug.Log($"{name}: No free tile to spawn on. Skipping cycle.");
+            Debug.Log($"{name}: No free walkable tile to spawn on. Skipping cycle.");
             return;
         }
 
@@ -117,23 +144,14 @@ public class Spawner : Structure
             return;
         }
 
-        // Place it on the tile if it's free
-        if (randomTile.occupiedUnit == null)
-        {
-            randomTile.SetUnit(newUnit);
-            spawnedCount++;
+        // Assign the Goblin to the tile
+        randomTile.SetUnit(newUnit, true);
+        spawnedCount++;
 
-            Debug.Log(
-                $"{name} spawned '{newUnit.UnitName}' on tile '{randomTile.TileName}'. " +
-                $"Total: {spawnedCount}/{maxSpawnCount}"
-            );
-        }
-        else
-        {
-            // If the tile got occupied in the meantime
-            Debug.LogWarning($"{name}: Tile just got occupied! Destroying new unit.");
-            Destroy(newObj);
-        }
+        Debug.Log(
+            $"{name} spawned '{newUnit.UnitName}' on tile '{randomTile.TileName}'. " +
+            $"Total: {spawnedCount}/{maxSpawnCount}"
+        );
     }
 
     /// <summary>

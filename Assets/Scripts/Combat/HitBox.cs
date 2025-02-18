@@ -58,7 +58,7 @@ public class HitBox : MonoBehaviour
     /// Called after all hits for this frame are done. 
     /// Destroys the HitBox GameObject.
     /// </summary>
-    public void AfterHitEffect()
+    public virtual void AfterHitEffect() // Marked as virtual
     {
         Destroy(gameObject);
     }

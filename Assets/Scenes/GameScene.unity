@@ -870,7 +870,6 @@ MonoBehaviour:
   _BaseUnitGameObject: {fileID: 0}
   _SelectedUnit: {fileID: 0}
   _StartingSpawningTiles: []
-  _SelectedUnitsTilesMovement: []
   fixedZPosition: -1
   _UnitHoverOverTile: 0
 --- !u!1 &451101401

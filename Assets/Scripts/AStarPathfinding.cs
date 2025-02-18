@@ -12,6 +12,20 @@ public class AStarPathfinding
 
     public List<Tile> FindPath(Tile startTile, Tile targetTile)
     {
+        // Check if startTile or targetTile is null
+        if (startTile == null || targetTile == null)
+        {
+            Debug.LogError("Start tile or target tile is null. Cannot find path.");
+            return null;
+        }
+
+        // Check if startTile and targetTile are the same
+        if (startTile == targetTile)
+        {
+            Debug.LogWarning("Start tile and target tile are the same. No path needed.");
+            return new List<Tile> { startTile };
+        }
+
         List<Tile> openSet = new List<Tile>();
         HashSet<Tile> closedSet = new HashSet<Tile>();
         openSet.Add(startTile);
@@ -57,6 +71,7 @@ public class AStarPathfinding
             }
         }
 
+        Debug.LogWarning("No valid path found.");
         return null;
     }
 
@@ -69,6 +84,13 @@ public class AStarPathfinding
         {
             path.Add(currentTile);
             currentTile = currentTile.Parent;
+
+            // Prevent infinite loops in case of invalid paths
+            if (currentTile == null)
+            {
+                Debug.LogError("Invalid path detected. Parent tile is null.");
+                return null;
+            }
         }
         path.Reverse();
         return path;
@@ -98,10 +120,16 @@ public class AStarPathfinding
         foreach (var direction in directions)
         {
             Vector2 checkPos = new Vector2(tile._coordinates.x + direction.x, tile._coordinates.y + direction.y);
-            Tile neighbour = _gridManager.GetTileAtCord(checkPos);
-            if (neighbour != null && neighbour.walkable)
+
+            // Check if the neighbour position is within the grid bounds
+            if (checkPos.x >= 0 && checkPos.x < _gridManager.width &&
+                checkPos.y >= 0 && checkPos.y < _gridManager.height)
             {
-                neighbours.Add(neighbour);
+                Tile neighbour = _gridManager.GetTileAtCord(checkPos);
+                if (neighbour != null && neighbour.walkable)
+                {
+                    neighbours.Add(neighbour);
+                }
             }
         }
 

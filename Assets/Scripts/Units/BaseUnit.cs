@@ -6,7 +6,6 @@ public enum BaseUnitType { Character, Structure }
 
 public class BaseUnit : MonoBehaviour
 {
-
     public BaseUnitType _Type;
 
     [Header("Unit Data")]
