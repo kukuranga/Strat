@@ -38,10 +38,14 @@ public class Goblin : Character
         }
         else
         {
-            // Aggro behavior: move towards the target hero and attack
+            // Aggro behavior: follow the target hero and attack
             if (targetHero != null)
             {
-                MoveTowardsTarget();
+                // Follow the target hero
+                FollowTarget();
+
+                // Rotate towards the target and attack if in range
+                RotateTowardsTarget();
                 if (Vector3.Distance(transform.position, targetHero.transform.position) <= attackRange)
                 {
                     TryMeleeAttack(targetHero);
@@ -49,7 +53,8 @@ public class Goblin : Character
             }
             else
             {
-                isAggro = false; // Reset aggro if the target is lost
+                // Reset aggro if the target is lost
+                isAggro = false;
             }
         }
     }
@@ -138,88 +143,47 @@ public class Goblin : Character
         }
     }
 
-    private void MoveTowardsTarget()
+    private void FollowTarget()
     {
         if (targetHero == null) return;
 
-        // Move to the closest adjacent tile to the target
-        Tile closestTile = GetClosestAdjacentTile(targetHero.OccupiedTile);
-        if (closestTile != null && closestTile.walkable)
+        // Move towards the target hero
+        Tile targetTile = targetHero.OccupiedTile;
+        if (targetTile != null && targetTile.walkable)
         {
-            MoveToDestination(closestTile);
-        }
-        else
-        {
-            Debug.LogWarning("No valid walkable tile found to move towards target.");
+            MoveToDestination(targetTile);
         }
     }
 
-    private Tile GetClosestAdjacentTile(Tile targetTile)
+    private void RotateTowardsTarget()
     {
-        if (targetTile == null)
-        {
-            Debug.LogWarning("Target tile is null. Cannot find adjacent tiles.");
-            return null;
-        }
+        if (targetHero == null) return;
 
-        List<Tile> adjacentTiles = new List<Tile>();
-
-        // Check all four directions (North, South, East, West)
-        Vector2[] directions = new Vector2[]
-        {
-            new Vector2(0, 1),  // North
-            new Vector2(0, -1), // South
-            new Vector2(1, 0),  // East
-            new Vector2(-1, 0)  // West
-        };
-
-        foreach (var direction in directions)
-        {
-            Vector2 checkPos = new Vector2(targetTile._coordinates.x + direction.x, targetTile._coordinates.y + direction.y);
-
-            // Ensure the coordinates are within the grid bounds
-            if (checkPos.x >= 0 && checkPos.x < GridManager.Instance.width &&
-                checkPos.y >= 0 && checkPos.y < GridManager.Instance.height)
-            {
-                Tile tile = GridManager.Instance.GetTileAtCord(checkPos);
-                if (tile != null && tile.walkable)
-                {
-                    adjacentTiles.Add(tile);
-                }
-            }
-        }
-
-        if (adjacentTiles.Count > 0)
-        {
-            // Find the closest tile to the Goblin
-            Tile closestTile = adjacentTiles[0];
-            float closestDistance = Vector3.Distance(transform.position, closestTile.transform.position);
-
-            foreach (var tile in adjacentTiles)
-            {
-                float distance = Vector3.Distance(transform.position, tile.transform.position);
-                if (distance < closestDistance)
-                {
-                    closestTile = tile;
-                    closestDistance = distance;
-                }
-            }
-
-            return closestTile;
-        }
-
-        return null;
+        // Rotate towards the target
+        Vector3 direction = (targetHero.transform.position - transform.position).normalized;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
     }
 
     private void TryMeleeAttack(Character target)
     {
-        if (isAttacking || Time.time < nextAutoAttackTime) return;
+        if (isAttacking || Time.time < nextAutoAttackTime)
+        {
+            Debug.LogWarning($"{UnitName} is already attacking or on cooldown.");
+            return;
+        }
 
         // Perform the dagger attack
         HurtBox hurtBox = target.GetComponentInChildren<HurtBox>();
         if (hurtBox != null)
         {
+            Debug.Log($"{UnitName} is attacking {target.UnitName}.");
             daggerAttack.PerformAttack(this, hurtBox);
         }
+        else
+        {
+            Debug.LogError($"No HurtBox found on target {target.UnitName}.");
+        }
     }
-}
+}   

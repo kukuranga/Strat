@@ -11,6 +11,9 @@ public class HitBox : MonoBehaviour
     [Tooltip("Which faction owns this HitBox (so we don't damage allies).")]
     public Faction factionOwner;
 
+    [Tooltip("Whether the HitBox should despawn after hitting a target.")]
+    public bool shouldDespawn = true; // Default to true for backward compatibility
+
     // Keep track of all HurtBoxes hit during this frame 
     private HashSet<HurtBox> _hitTargets = new HashSet<HurtBox>();
 
@@ -39,7 +42,7 @@ public class HitBox : MonoBehaviour
     {
         // If we have hit at least one target this frame (or past frames),
         // schedule a despawn so we don't destroy mid-frame (allowing multiple collisions).
-        if (_hitTargets.Count > 0 && !_shouldDespawn)
+        if (_hitTargets.Count > 0 && !_shouldDespawn && shouldDespawn)
         {
             _shouldDespawn = true;
             StartCoroutine(DespawnAtEndOfFrame());
@@ -56,10 +59,15 @@ public class HitBox : MonoBehaviour
 
     /// <summary>
     /// Called after all hits for this frame are done. 
-    /// Destroys the HitBox GameObject.
+    /// Destroys the HitBox GameObject if shouldDespawn is true.
     /// </summary>
     public virtual void AfterHitEffect() // Marked as virtual
     {
-        Destroy(gameObject);
+        Debug.Log($"AfterHitEffect called on {gameObject.name}. shouldDespawn: {shouldDespawn}");
+        if (shouldDespawn)
+        {
+            Debug.Log($"Destroying {gameObject.name}.");
+            Destroy(gameObject);
+        }
     }
 }
