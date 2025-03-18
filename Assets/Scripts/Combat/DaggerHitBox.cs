@@ -7,7 +7,7 @@ public class DaggerHitBox : HitBox
     public float lifetime = 0.5f; // Lifetime of the dagger before it disappears
     public int damage = 1; // Damage dealt by the dagger
 
-    private Goblin owner;
+    public Goblin owner;
     private Character target;
 
     public void Initialize(Goblin owner, Character target)
@@ -48,11 +48,5 @@ public class DaggerHitBox : HitBox
 
         // Destroy the dagger if it doesn't hit anything
         AfterHitEffect();
-    }
-
-    // Override the AfterHitEffect method from HitBox
-    public override void AfterHitEffect()
-    {
-        Destroy(gameObject);
     }
 }

@@ -9,6 +9,7 @@ public class BaseUnit : MonoBehaviour
     public BaseUnitType _Type;
 
     [Header("Unit Data")]
+    public bool InObjectPool;
     public int _AssignedPlayer;
     public string UnitName;
     public string UnitDescription;
@@ -86,12 +87,14 @@ public class BaseUnit : MonoBehaviour
     //Triggers this to be overridden when the unit is selected
     public virtual void OnSelectiion()
     {
-        Debug.Log($"{UnitName} Selected");
+        if (GameManager.Instance._DebuggerMode)
+            Debug.Log($"{UnitName} Selected");
     }
 
     public virtual void ClearSelection()
     {
-        Debug.Log($"{UnitName} Cleared Selected");
+        if (GameManager.Instance._DebuggerMode)
+            Debug.Log($"{UnitName} Cleared Selected");
     }
 
     public virtual void TakeDamage(int damage)

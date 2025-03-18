@@ -9,10 +9,3 @@ public class ScriptableUnit : ScriptableObject
 
     public BaseUnit unitPrefab;
 }
-
-public enum Faction
-{
-   Hero = 0,
-   Enemy = 1,
-   NPC = 2
-}

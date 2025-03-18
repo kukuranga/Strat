@@ -3,8 +3,11 @@
 -PLEANTY OF EFFECTS
 
 -----PRIORITY---------
-- And the base unit to spawn
 - Randomly placing it on the map oposite the player
+- Refactor the spawn rotation of the objects along with the movement to use new orientation
+- change how the goblin attacks to use its own script to create the logic.
+
+-***Change the current goblin move logic to just constantly update the target location instead of the current.
 
 -----Pending------
 
@@ -60,6 +63,18 @@ Start Working on audio by stealing the other audio Manager
 
 -Movement, when the unit can move 2 spaces but the closest one is not moveable make it
 	stop the movement ability pased that point
+
+-Combat, Attacks dont work as intended.
+	- simplify the combat more, take away the attack and auto attack ranges for each unit on separate scripts
+	- attacks should work simply. 
+	- if the unit is in range of an anemy attack the enemy
+	- only if the unit is not moving
+	- only if the unit can attack
+	- only if the unit is in range
+	
+	-to simplyfy attacks remove attack scriptable object logic and move it to the character
+	as a virtual method to be created by each individual unit.
+	-Auto attack should also be in the base character script and should just check the range for an enemy
 
 //---TODO--//
 

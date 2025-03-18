@@ -14,6 +14,22 @@ public class GameManager : Singleton<GameManager>
 
     public HitStop _HitStop;
 
+    private void Awake()
+    {
+        //if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.OpenGLES2)
+        //{
+        //    // Lower frame rate for low-end devices
+        //    Application.targetFrameRate = 30;
+        //}
+        //else
+        //{
+        //    // Higher frame rate for high-end devices
+        //    Application.targetFrameRate = 60;
+        //}
+
+        Application.targetFrameRate = 60;
+
+    }
 
     private void Start()
     {

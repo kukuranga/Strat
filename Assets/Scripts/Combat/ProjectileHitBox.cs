@@ -17,26 +17,28 @@ public class ProjectileHitBox : HitBox
     [Tooltip("Direction (local or world space) in which the projectile travels.")]
     public Vector3 travelDirection = Vector3.forward;
 
+    [Tooltip("The target unit for the projectile (optional).")]
+    public BaseUnit targetUnit; // Added to support targeting a specific BaseUnit
+
     private float _timer = 0f;
 
     private void Start()
     {
+        // If a target unit is assigned, set the initial travel direction toward the target
+        if (targetUnit != null)
+        {
+            travelDirection = (targetUnit.transform.position - transform.position).normalized;
+        }
+
         // Normalize the travel direction just in case
         travelDirection.Normalize();
 
         // Point the projectile to face its travel direction
-        // This sets the GameObject's forward vector to match travelDirection.
-        // If you want to manually rotate it in the editor, you can remove or adjust this line.
         transform.forward = travelDirection;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        // If you want the projectile to be able to hit multiple targets 
-        // before its lifetime ends, keep the base collision logic as is.
-        // If you want it to destroy immediately after the first hit, 
-        // consider overriding AfterHitEffect or removing the end-of-frame coroutine in the base class.
-
         // Move the projectile forward (based on transform.forward) 
         transform.position += transform.forward * (speed * Time.deltaTime);
 
@@ -45,6 +47,30 @@ public class ProjectileHitBox : HitBox
         if (_timer >= lifeTime)
         {
             AfterHitEffect();  // Calls Destroy(gameObject) from the base class
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // Check if the collided object has a HurtBox
+        HurtBox hurtBox = other.GetComponent<HurtBox>();
+        if (hurtBox != null && hurtBox.ownerUnit != null)
+        {
+            // Skip if the hurtBox belongs to the same faction as this hitbox
+            if (hurtBox.ownerUnit.Faction == factionOwner) return;
+
+            // Only deal damage if we haven't hit this HurtBox yet
+            if (!_hitTargets.Contains(hurtBox))
+            {
+                _hitTargets.Add(hurtBox);
+                hurtBox.OnHit(defaultDamage, this);
+
+                // If the projectile has a target unit and it hits that unit, destroy the projectile
+                if (targetUnit != null && hurtBox.ownerUnit == targetUnit)
+                {
+                    AfterHitEffect();
+                }
+            }
         }
     }
 }

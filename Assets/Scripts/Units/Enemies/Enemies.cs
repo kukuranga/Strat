@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : BaseUnit
+public class Enemies : BaseUnit
 {
+    //To Expand on the base unit and not be selectable
+    //this script will have the loic for movement and pathfinding
+    // have a basic method for attacking
+    //handles moving towards the player
+
     [Header("Movement")]
-    public float _ATBMoveCost = 5;
     public float moveSpeed = 3f;
     public float rotateSpeed = 360f;
     public bool isMoving = false;
@@ -14,7 +18,6 @@ public class Character : BaseUnit
     public int AutoAttackRange;
     public bool isAttacking = false;
     public float nextAutoAttackTime = 0f;
-    public int _ATBCombatCost;
     public float autoAttackCooldown;
     public BaseUnit _AttackTarget;
 
@@ -23,7 +26,6 @@ public class Character : BaseUnit
     private AStarPathfinding _pathfinding;
     private List<Tile> _currentPath;
     private int _currentPathIndex;
-    private bool _waitingForATB = false;
 
     protected override void Start()
     {
@@ -58,15 +60,6 @@ public class Character : BaseUnit
     }
 
     #region Combat Logic
-    public virtual void Ability1()
-    {
-        Debug.Log($"{UnitName} uses Ability1.");
-    }
-
-    public virtual void Ability2()
-    {
-        Debug.Log($"{UnitName} uses Ability2.");
-    }
 
     public virtual void TryAutoAttack(BaseUnit target)
     {
@@ -161,42 +154,6 @@ public class Character : BaseUnit
 
     public void MoveToDestination(Tile destinationTile)
     {
-        if (OccupiedTile == null)
-        {
-            if (GameManager.Instance._DebuggerMode)
-                Debug.LogError("OccupiedTile is null. Cannot move.");
-            return;
-        }
-
-        if (destinationTile == null)
-        {
-            if (GameManager.Instance._DebuggerMode)
-                Debug.LogError("Destination tile is null. Cannot move.");
-            return;
-        }
-
-        if (_pathfinding == null)
-        {
-            if (GameManager.Instance._DebuggerMode)
-                Debug.LogError("Pathfinding is not initialized. Cannot move.");
-            return;
-        }
-
-        if (isAttacking)
-        {
-            if (GameManager.Instance._DebuggerMode)
-                Debug.Log($"{UnitName} is attacking and cannot move yet.");
-            return;
-        }
-
-        // Check if the destination tile is occupied
-        if (destinationTile.occupiedUnit != null)
-        {
-            if (GameManager.Instance._DebuggerMode)
-                Debug.LogWarning($"Destination tile at {destinationTile._coordinates} is occupied. Cannot move.");
-            return;
-        }
-
         // Clear combat visuals before starting movement
         ToggleAutoAttackRangeVisual(false);
 
@@ -227,14 +184,6 @@ public class Character : BaseUnit
                 break;
             }
 
-            // Wait until there's enough ATB to move
-            while (ATBManager.Instance.GetATBAmount() < _ATBMoveCost)
-            {
-                _waitingForATB = true;
-                yield return null; // Wait for the next frame
-            }
-            _waitingForATB = false;
-
             // Update the unit's occupied tile
             if (OccupiedTile != null)
             {
@@ -245,9 +194,6 @@ public class Character : BaseUnit
 
             yield return StartCoroutine(MoveUnitRoutine(nextTile.transform.position));
             _currentPathIndex++;
-
-            // Pay ATB cost after each step
-            ATBManager.Instance.PayATBCost(_ATBMoveCost);
         }
 
         isMoving = false;
@@ -309,7 +255,7 @@ public class Character : BaseUnit
     // --------------------------------------------------
     // Attack Logic (Replaced with Scriptable Object)
     // --------------------------------------------------
-    
+
 
     public override void OnSelectiion()
     {

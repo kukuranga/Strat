@@ -9,6 +9,12 @@ public enum UnitType
     TestUnit,
 
 }
+public enum Faction
+{
+    Hero = 0,
+    Enemy = 1,
+    NPC = 2
+}
 
 public class UnitManager : Singleton<UnitManager>
 {
@@ -51,7 +57,10 @@ public class UnitManager : Singleton<UnitManager>
 
     public void KillUnit(BaseUnit _unit)
     {
-        _TestObjects.ReturnObject(_unit.gameObject);
+        if(_unit. InObjectPool)
+            _TestObjects.ReturnObject(_unit.gameObject);
+        else
+            Destroy(_unit.gameObject);
     }
 
     private void Awake()

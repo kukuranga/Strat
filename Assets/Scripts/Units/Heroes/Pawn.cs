@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class Pawn : Character
 {
+    [Header("Pawn Attributes")]
     public GameObject projectilePrefab;
     public Transform projectileSpawnParent;
+
+    protected override void Update()
+    {
+        base.Update();
+    }
 
     public override void Ability1()
     {
@@ -17,23 +23,24 @@ public class Pawn : Character
         Debug.Log("Pawn uses Ability2.");
     }
 
-    public override void TryAutoAttack(HurtBox hurtBox)
+    // Updated TryAutoAttack to accept a BaseUnit target
+    public override void TryAutoAttack(BaseUnit target)
     {
         // Skip if currently attacking or on cooldown
         if (isAttacking || Time.time < nextAutoAttackTime) return;
 
         // Self-attack or same faction? Skip
-        if (hurtBox.ownerUnit == this) return;
-        if (hurtBox.ownerUnit.Faction == this.Faction) return;
+        if (target == this) return;
+        if (target.Faction == this.Faction) return;
 
         // Check ATB
         if (ATBManager.Instance.GetATBAmount() < _ATBCombatCost) return;
 
         // Start the coroutine to handle rotation + projectile spawn
-        StartCoroutine(AutoAttackRoutine(hurtBox));
+        StartCoroutine(AutoAttackRoutine(target));
     }
 
-    private IEnumerator AutoAttackRoutine(HurtBox hurtBox)
+    private IEnumerator AutoAttackRoutine(BaseUnit target)
     {
         isAttacking = true;
 
@@ -41,7 +48,7 @@ public class Pawn : Character
         ATBManager.Instance.PayATBCost(_ATBCombatCost);
 
         // 2) Rotate toward the target BEFORE spawning the projectile
-        yield return RotateUnitTowards(hurtBox.transform.position);
+        yield return RotateUnitTowards(target.transform.position);
 
         // 3) Spawn projectile
         if (projectilePrefab != null && projectileSpawnParent != null)
@@ -55,10 +62,10 @@ public class Pawn : Character
             ProjectileHitBox projHitBox = newProjectile.GetComponent<ProjectileHitBox>();
             if (projHitBox != null)
             {
-                Vector3 dirToTarget =
-                    (hurtBox.transform.position - projectileSpawnParent.position).normalized;
-                projHitBox.travelDirection = dirToTarget;
+                // Set the initial direction toward the target
+                projHitBox.travelDirection = (target.transform.position - projectileSpawnParent.position).normalized;
                 projHitBox.factionOwner = this.Faction;
+                projHitBox.targetUnit = target; // Assign the target unit (optional)
             }
         }
 
@@ -68,6 +75,4 @@ public class Pawn : Character
         isAttacking = false;
         yield break;
     }
-
-   
 }

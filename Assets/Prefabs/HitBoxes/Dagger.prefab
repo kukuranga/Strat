@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1630020111955536318}
   - component: {fileID: 1630020111955536317}
   - component: {fileID: 6957726217928628561}
-  - component: {fileID: 2372380554428115952}
+  - component: {fileID: 4254320893136911987}
   m_Layer: 0
   m_Name: Dagger
   m_TagString: Untagged
@@ -115,7 +115,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2372380554428115952
+--- !u!114 &4254320893136911987
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,11 +124,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1630020111955536316}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45f2f312161612d49af13839c389c205, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f16bd327e21acb449f788e49e53e3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   defaultDamage: 1
   factionOwner: 2
-  moveSpeed: 10
-  lifetime: 0.5
-  damage: 1
+  shouldDespawn: 0
+  _Targets: 5

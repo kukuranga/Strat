@@ -229,4 +229,207 @@ public class GridManager : Singleton<GridManager>
         AStarPathfinding pathfinding = new AStarPathfinding(this);
         return pathfinding.FindPath(startTile, endTile);
     }
+
+    public List<Tile> GetTilesInRadius(Tile centerTile, int radius)
+    {
+        List<Tile> tilesInRadius = new List<Tile>();
+        if (centerTile == null || radius < 0)
+        {
+            Debug.LogWarning("Invalid input: Center tile is null or radius is negative.");
+            return tilesInRadius;
+        }
+
+        // Use a queue for BFS
+        Queue<(Tile tile, int distance)> queue = new Queue<(Tile, int)>();
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+
+        // Start with the center tile
+        queue.Enqueue((centerTile, 0));
+        visited.Add(centerTile._coordinates);
+
+        while (queue.Count > 0)
+        {
+            var (currentTile, currentDistance) = queue.Dequeue();
+
+            // Add the current tile to the result if it's within the radius
+            if (currentDistance <= radius)
+            {
+                tilesInRadius.Add(currentTile);
+            }
+
+            // Stop exploring if we've reached the radius limit
+            if (currentDistance >= radius)
+            {
+                continue;
+            }
+
+            // Explore neighboring tiles
+            foreach (var neighborOffset in GetNeighborOffsets())
+            {
+                Vector2Int neighborCoords = new Vector2Int(
+                    currentTile._coordinates.x + neighborOffset.x,
+                    currentTile._coordinates.y + neighborOffset.y
+                );
+
+                // Check if the neighbor coordinates are valid and not already visited
+                if (_tiles.TryGetValue(neighborCoords, out Tile neighborTile) && !visited.Contains(neighborCoords))
+                {
+                    visited.Add(neighborCoords);
+                    queue.Enqueue((neighborTile, currentDistance + 1));
+                }
+            }
+        }
+
+        return tilesInRadius;
+    }
+
+    // Helper method to get offsets for 4-directional neighbors
+    private List<Vector2Int> GetNeighborOffsets()
+    {
+        return new List<Vector2Int>
+    {
+        new Vector2Int(1, 0),  // Right
+        new Vector2Int(-1, 0), // Left
+        new Vector2Int(0, 1),  // Up
+        new Vector2Int(0, -1), // Down
+        new Vector2Int(1, 1),  // Up-Right
+        new Vector2Int(-1, 1), // Up-Left
+        new Vector2Int(1, -1), // Down-Right
+        new Vector2Int(-1, -1) // Down-Left
+    };
+    
+    }
+    public Tile GetClosestTileInDirection(Tile startingTile, Tile targetTile)
+    {
+        if (startingTile == null || targetTile == null)
+        {
+            Debug.LogWarning("Starting tile or target tile is null. Cannot find closest tile.");
+            return null;
+        }
+
+        // Calculate the direction from the starting tile to the target tile
+        Vector2 direction = new Vector2(
+            targetTile._coordinates.x - startingTile._coordinates.x,
+            targetTile._coordinates.y - startingTile._coordinates.y
+        ).normalized;
+
+        // Determine the closest adjacent tile in the direction of the target
+        Vector2Int closestTileCoords = new Vector2Int(
+            startingTile._coordinates.x + Mathf.RoundToInt(direction.x),
+            startingTile._coordinates.y + Mathf.RoundToInt(direction.y)
+        );
+
+        // Check if the closest tile coordinates are within the grid bounds
+        if (closestTileCoords.x >= 0 && closestTileCoords.x < width &&
+            closestTileCoords.y >= 0 && closestTileCoords.y < height)
+        {
+            // Get the tile at the calculated coordinates
+            if (_tiles.TryGetValue(closestTileCoords, out Tile closestTile))
+            {
+                // Return the tile if it's walkable and unoccupied
+                if (closestTile.walkable && closestTile.occupiedUnit == null)
+                {
+                    return closestTile;
+                }
+                else
+                {
+                    Debug.LogWarning($"Closest tile at {closestTileCoords} is not walkable or is occupied.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Tile at {closestTileCoords} not found in the grid.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Closest tile coordinates {closestTileCoords} are out of grid bounds.");
+        }
+
+        return null;
+    }
+
+    //returns the closest tile in a north east west south direction
+    public Tile GetClosestTileInCardinalDirection(Tile startingTile, Tile targetTile)
+    {
+        if (startingTile == null || targetTile == null)
+        {
+            Debug.LogWarning("Starting tile or target tile is null. Cannot find closest tile.");
+            return null;
+        }
+
+        // Calculate the direction from the starting tile to the target tile
+        Vector2 direction = new Vector2(
+            targetTile._coordinates.x - startingTile._coordinates.x,
+            targetTile._coordinates.y - startingTile._coordinates.y
+        );
+
+        // Determine the closest cardinal direction
+        Vector2 cardinalDirection = GetCardinalDirection(direction);
+
+        // Calculate the coordinates of the closest tile in the cardinal direction
+        Vector2Int closestTileCoords = new Vector2Int(
+            startingTile._coordinates.x + (int)cardinalDirection.x,
+            startingTile._coordinates.y + (int)cardinalDirection.y
+        );
+
+        // Check if the closest tile coordinates are within the grid bounds
+        if (closestTileCoords.x >= 0 && closestTileCoords.x < width &&
+            closestTileCoords.y >= 0 && closestTileCoords.y < height)
+        {
+            // Get the tile at the calculated coordinates
+            if (_tiles.TryGetValue(closestTileCoords, out Tile closestTile))
+            {
+                // Return the tile if it's walkable and unoccupied
+                if (closestTile.walkable && closestTile.occupiedUnit == null)
+                {
+                    return closestTile;
+                }
+                else
+                {
+                    Debug.LogWarning($"Closest tile at {closestTileCoords} is not walkable or is occupied.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Tile at {closestTileCoords} not found in the grid.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Closest tile coordinates {closestTileCoords} are out of grid bounds.");
+        }
+
+        return null;
+    }
+
+    private Vector2 GetCardinalDirection(Vector2 direction)
+    {
+        // Determine the closest cardinal direction based on the direction vector
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Normalize the angle to the range [0, 360)
+        if (angle < 0)
+        {
+            angle += 360;
+        }
+
+        // Determine the closest cardinal direction
+        if (angle >= 45 && angle < 135)
+        {
+            return Vector2.up; // North
+        }
+        else if (angle >= 135 && angle < 225)
+        {
+            return Vector2.left; // West
+        }
+        else if (angle >= 225 && angle < 315)
+        {
+            return Vector2.down; // South
+        }
+        else
+        {
+            return Vector2.right; // East
+        }
+    }
 }

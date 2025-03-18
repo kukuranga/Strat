@@ -14,11 +14,11 @@ public class HitBox : MonoBehaviour
     [Tooltip("Whether the HitBox should despawn after hitting a target.")]
     public bool shouldDespawn = true; // Default to true for backward compatibility
 
-    // Keep track of all HurtBoxes hit during this frame 
-    private HashSet<HurtBox> _hitTargets = new HashSet<HurtBox>();
+    [Tooltip("List of target factions this HitBox can damage.")]
+    [EnumFlags] public Faction _Targets;
 
-    // We only want to despawn once, so use a flag to avoid multiple destroys
-    private bool _shouldDespawn = false;
+    // Keep track of all HurtBoxes hit during this frame 
+    public HashSet<HurtBox> _hitTargets = new HashSet<HurtBox>();
 
     private void OnTriggerEnter(Collider other)
     {
@@ -28,6 +28,9 @@ public class HitBox : MonoBehaviour
         {
             // Skip if the hurtBox belongs to the same faction as this hitbox
             if (hurtBox.ownerUnit.Faction == factionOwner) return;
+
+            // Skip if the hurtBox's faction is not in the _Targets bitmask
+            if ((_Targets & hurtBox.ownerUnit.Faction) != hurtBox.ownerUnit.Faction) return;
 
             // Only deal damage if we haven't hit this HurtBox yet
             if (!_hitTargets.Contains(hurtBox))
@@ -40,21 +43,7 @@ public class HitBox : MonoBehaviour
 
     private void Update()
     {
-        // If we have hit at least one target this frame (or past frames),
-        // schedule a despawn so we don't destroy mid-frame (allowing multiple collisions).
-        if (_hitTargets.Count > 0 && !_shouldDespawn && shouldDespawn)
-        {
-            _shouldDespawn = true;
-            StartCoroutine(DespawnAtEndOfFrame());
-        }
-    }
-
-    // Wait until the end of the frame before removing the HitBox
-    // so all collisions can be processed in a single frame.
-    private IEnumerator DespawnAtEndOfFrame()
-    {
-        yield return new WaitForEndOfFrame();
-        AfterHitEffect();
+        // Optionally, you can add logic here if needed
     }
 
     /// <summary>
@@ -63,11 +52,14 @@ public class HitBox : MonoBehaviour
     /// </summary>
     public virtual void AfterHitEffect() // Marked as virtual
     {
-        Debug.Log($"AfterHitEffect called on {gameObject.name}. shouldDespawn: {shouldDespawn}");
         if (shouldDespawn)
         {
-            Debug.Log($"Destroying {gameObject.name}.");
             Destroy(gameObject);
         }
+    }
+
+    public void ResetHitTargets()
+    {
+        _hitTargets.Clear();
     }
 }

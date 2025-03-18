@@ -13,19 +13,22 @@ public class MeleeDaggerAttack : Attack
     {
         if (attacker.isAttacking || Time.time < attacker.nextAutoAttackTime)
         {
-            Debug.LogWarning($"{attacker.UnitName} is already attacking or on cooldown.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogWarning($"{attacker.UnitName} is already attacking or on cooldown.");
             return; // Skip if already attacking or on cooldown
         }
 
         if (ATBManager.Instance.GetATBAmount() < attacker._ATBCombatCost)
         {
-            Debug.LogWarning($"{attacker.UnitName} does not have enough ATB to attack.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogWarning($"{attacker.UnitName} does not have enough ATB to attack.");
             return; // Skip if not enough ATB
         }
 
         if (target == null)
         {
-            Debug.LogError("Target HurtBox is null.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogError("Target HurtBox is null.");
             return; // Skip if target is null
         }
 
@@ -35,7 +38,8 @@ public class MeleeDaggerAttack : Attack
 
     private IEnumerator MeleeAttackRoutine(Character attacker, HurtBox target)
     {
-        Debug.Log($"{attacker.UnitName} is starting melee attack routine.");
+        if (GameManager.Instance._DebuggerMode)
+            Debug.Log($"{attacker.UnitName} is starting melee attack routine.");
 
         attacker.isAttacking = true;
 
@@ -49,7 +53,8 @@ public class MeleeDaggerAttack : Attack
         Transform dagger = attacker.transform.Find("Dagger"); // Replace "Dagger" with the actual name of the dagger GameObject
         if (dagger == null)
         {
-            Debug.LogError("Dagger GameObject not found on the attacker.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogError("Dagger GameObject not found on the attacker.");
             yield break;
         }
 
@@ -58,11 +63,13 @@ public class MeleeDaggerAttack : Attack
         if (hitBox != null)
         {
             hitBox.shouldDespawn = false; // Prevent the dagger from despawning
-            Debug.Log($"Set shouldDespawn to false for {dagger.name}.");
+            if (GameManager.Instance._DebuggerMode) 
+                Debug.Log($"Set shouldDespawn to false for {dagger.name}.");
         }
         else
         {
-            Debug.LogError("Dagger GameObject does not have a HitBox component.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogError("Dagger GameObject does not have a HitBox component.");
         }
 
         // 5) Move the dagger along the Y-axis (reduce distance by 1/3)
@@ -80,7 +87,8 @@ public class MeleeDaggerAttack : Attack
         // 6) Check for collision with the target
         if (Vector3.Distance(dagger.position, target.transform.position) <= 0.5f)
         {
-            Debug.Log($"{attacker.UnitName} hit {target.ownerUnit.UnitName}!");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.Log($"{attacker.UnitName} hit {target.ownerUnit.UnitName}!");
             target.OnHit(1, null); // Deal damage to the target
         }
 
@@ -96,7 +104,7 @@ public class MeleeDaggerAttack : Attack
         // 8) Set the cooldown time
         attacker.nextAutoAttackTime = Time.time + attackCooldown; // Use the inherited attackCooldown field
         attacker.isAttacking = false;
-
-        Debug.Log($"{attacker.UnitName} has finished melee attack routine.");
+        if (GameManager.Instance._DebuggerMode)
+            Debug.Log($"{attacker.UnitName} has finished melee attack routine.");
     }
 }

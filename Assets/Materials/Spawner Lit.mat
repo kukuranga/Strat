@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Spawner
+  m_Name: Spawner Lit
   m_Shader: {fileID: -6465566751694194690, guid: a665643f1d9f3aa429bb5f65d0aa1799,
     type: 3}
   m_ValidKeywords: []

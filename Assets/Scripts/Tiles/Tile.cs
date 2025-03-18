@@ -128,19 +128,22 @@ public class Tile : MonoBehaviour
         // If occupant is mid-action, disallow selection
         if (occupant.isMoving)
         {
-            Debug.Log("Character is currently moving; cannot select yet.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.Log("Character is currently moving; cannot select yet.");
             return;
         }
         if (occupant.isAttacking)
         {
-            Debug.Log("Character is currently attacking; cannot select yet.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.Log("Character is currently attacking; cannot select yet.");
             return;
         }
 
         // If tile is flagged as a combat tile
         if (_Combat && PlayerManager.Instance._SelectedUnit != null)
         {
-            Debug.Log("Combat tile clicked.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.Log("Combat tile clicked.");
         }
         else
         {
@@ -205,7 +208,8 @@ public class Tile : MonoBehaviour
         {
             if (character.OccupiedTile == null)
             {
-                Debug.LogError("Character's OccupiedTile is null. Cannot move.");
+                if (GameManager.Instance._DebuggerMode) 
+                    Debug.LogError("Character's OccupiedTile is null. Cannot move.");
                 return;
             }
 
@@ -216,7 +220,8 @@ public class Tile : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"Destination tile at {this._coordinates} is not walkable. Unit will not move.");
+                if(GameManager.Instance._DebuggerMode)
+                    Debug.LogWarning($"Destination tile at {this._coordinates} is not walkable. Unit will not move.");
             }
         }
     }

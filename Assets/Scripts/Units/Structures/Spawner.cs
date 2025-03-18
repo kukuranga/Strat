@@ -31,7 +31,8 @@ public class Spawner : Structure
         //    'this' is a Structure -> BaseUnit, so check OccupiedTile
         if (OccupiedTile == null)
         {
-            Debug.LogWarning($"{name} Spawner has no valid OccupiedTile. Aborting spawn logic.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogWarning($"{name} Spawner has no valid OccupiedTile. Aborting spawn logic.");
             return;
         }
 
@@ -42,9 +43,12 @@ public class Spawner : Structure
 
         if (SpawnLocations.Count == 0)
         {
-            Debug.LogWarning($"{name} found no spawn locations in range of tile {OccupiedTile.TileName}!");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogWarning($"{name} found no spawn locations in range of tile {OccupiedTile.TileName}!");
             return;
         }
+
+        _Interactable = true;
 
         // 3) Begin spawning - one unit each cycle until we reach max
         StartCoroutine(SpawnRoutine());
@@ -102,8 +106,8 @@ public class Spawner : Structure
                 yield return new WaitForSeconds(Interval);
                 AttemptSpawn();
             }
-
-            Debug.Log($"{name} reached maxSpawnCount ({maxSpawnCount}). Stopping spawner.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.Log($"{name} reached maxSpawnCount ({maxSpawnCount}). Stopping spawner.");
         }
     }
 
@@ -112,7 +116,8 @@ public class Spawner : Structure
         // Only spawn if we have valid Tiles & Prefabs
         if (SpawnLocations.Count == 0 || UnitsToSpawn.Count == 0)
         {
-            Debug.LogWarning($"{name}: No spawn locations or no prefabs available!");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogWarning($"{name}: No spawn locations or no prefabs available!");
             return;
         }
 
@@ -120,7 +125,8 @@ public class Spawner : Structure
         Tile randomTile = GetRandomFreeTile();
         if (randomTile == null || !randomTile.walkable)
         {
-            Debug.Log($"{name}: No free walkable tile to spawn on. Skipping cycle.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.Log($"{name}: No free walkable tile to spawn on. Skipping cycle.");
             return;
         }
 
@@ -139,7 +145,8 @@ public class Spawner : Structure
         BaseUnit newUnit = newObj.GetComponent<BaseUnit>();
         if (newUnit == null)
         {
-            Debug.LogError($"{name}: Spawned prefab '{randomPrefab.name}' has no BaseUnit! Destroying.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogError($"{name}: Spawned prefab '{randomPrefab.name}' has no BaseUnit! Destroying.");
             Destroy(newObj);
             return;
         }
@@ -147,11 +154,11 @@ public class Spawner : Structure
         // Assign the Goblin to the tile
         randomTile.SetUnit(newUnit, true);
         spawnedCount++;
-
-        Debug.Log(
-            $"{name} spawned '{newUnit.UnitName}' on tile '{randomTile.TileName}'. " +
-            $"Total: {spawnedCount}/{maxSpawnCount}"
-        );
+        if (GameManager.Instance._DebuggerMode)
+                Debug.Log(
+                $"{name} spawned '{newUnit.UnitName}' on tile '{randomTile.TileName}'. " +
+                $"Total: {spawnedCount}/{maxSpawnCount}"
+            );
     }
 
     /// <summary>

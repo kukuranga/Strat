@@ -1,0 +1,40 @@
+---Full Detailed Ouline Of Combat In The Game----------------------
+
+BaseUnit
+	-Contains no Actual combat logic
+
+Character
+	- Contains outlines for auto Attack, ability 1, ability 2
+	- Auto Attacks can be toggled
+	- The auto attack range will be set as an int range that will be checked at runtime at intervals
+	- the attack interval will check the tiles around the unit and see if it contains any targets
+	- the targets shall be based on faction
+	- this auto attack ability will not trigger while the unit has a destination
+	- one a target has been set the Attack script will be called from the current attack logic
+	- this attack can only happen if the unit is capable of attacking
+	- while a destination is active or the unit is toggled to cannot attack it will not do this logic
+
+	-the battle logic will use colliders and such to actually deal damage
+	-all projectile logic and such will be taken care of by the unit individually through script
+	-using hit and hurt boxes to determin how to deal damage and interact
+	
+		Case 1:
+			-The pawn has an attack rage of 1 and will only attack enemy characters
+			-The pawn identifies a unit in the range and is not moving or performing any attacks
+			-the unit will then turn to face the enemy and fire a small projectile in the enemies direction
+			-the projectile will be slow moving and will aim to target the enemy
+			
+
+Structure
+
+	-On Update. this will be called on update depending on each individual Structures logic
+
+Hitbox
+	-The hitbox will only contain the basic logic of the attack
+	-Attack Strength and Target faction
+	-It will also be incharge of what happens after the Object hits
+	-Later On this will be used to assing any special effects to the objject being hit
+HurtBox
+	-The hurtbox will be incharge of taking all damage calculations and interacting with the unit being hit
+	-On hit it will assign the damage of the hitbox and call the correct animations if needed
+	-if the hitbox has any special effects it will be passed on to the character being effected if possible
