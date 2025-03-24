@@ -5,10 +5,11 @@ public class KillObjective : BaseObjective
 {
     public int RequiredKills;
     public GameObject SpawnerPrefab;
+    public int NumberOfSpawners = 1;
     private int currentKills;
 
     // Example coordinate for spawner. You can expose this or randomize it.
-    public Vector2 spawnerCoordinates = new Vector2(2, 2);
+    //public Vector2 spawnerCoordinates = new Vector2(2, 2);
 
     public override bool IsObjectiveComplete()
     {
@@ -19,53 +20,56 @@ public class KillObjective : BaseObjective
     {
         base.InitializeObjective();
 
+        for(int i = 0; i < NumberOfSpawners; i++)
+        { 
         // 1) Pick the tile for placing the spawner
-        Tile spawnTile = GridManager.Instance.GetTileAtCord(spawnerCoordinates);
+        Tile spawnTile = GridManager.Instance.GetARandomTile(); //GridManager.Instance.GetTileAtCord(spawnerCoordinates);
 
-        if (spawnTile == null)
-        {
-            Debug.LogWarning($"KillObjective: No tile found at coords {spawnerCoordinates}!");
-        }
-        else if (spawnTile.occupiedUnit != null)
-        {
-            Debug.LogWarning($"KillObjective: Tile {spawnerCoordinates} is occupied, cannot spawn spawner!");
-        }
-        else
-        {
-            // 2) Instantiate the spawner prefab at the tile's position
-            GameObject spawnerObj = Instantiate(
-                SpawnerPrefab,
-                spawnTile.transform.position,
-                Quaternion.identity
-            );
-
-            // Force the Z-axis to -1
-            Vector3 newPos = spawnerObj.transform.position;
-            newPos.z = -1f;
-            spawnerObj.transform.position = newPos;
-
-            // 3) Attach as a BaseUnit occupant on the tile
-            BaseUnit spawnerUnit = spawnerObj.GetComponent<BaseUnit>();
-            if (spawnerUnit != null)
+            if (spawnTile == null)
             {
-                spawnTile.SetUnit(spawnerUnit, false);
-
-                // 4) Now that OccupiedTile is set, call InitializeSpawner()
-                Spawner spawnerScript = spawnerObj.GetComponent<Spawner>();
-                if (spawnerScript != null)
-                {
-                    spawnerScript.InitializeSpawner();
-                }
-                else
-                {
-                    Debug.LogWarning(
-                        "KillObjective: SpawnerPrefab has a BaseUnit but no 'Spawner' script to initialize."
-                    );
-                }
+                Debug.LogWarning($"KillObjective: No tile found at coords!");
+            }
+            else if (spawnTile.occupiedUnit != null)
+            {
+                Debug.LogWarning($"KillObjective: Tile is occupied, cannot spawn spawner!");
             }
             else
             {
-                Debug.LogWarning("KillObjective: SpawnerPrefab has no BaseUnit component! Can't attach to tile.");
+                // 2) Instantiate the spawner prefab at the tile's position
+                GameObject spawnerObj = Instantiate(
+                    SpawnerPrefab,
+                    spawnTile.transform.position,
+                    Quaternion.identity
+                );
+
+                // Force the Z-axis to -1
+                Vector3 newPos = spawnerObj.transform.position;
+                newPos.z = -1f;
+                spawnerObj.transform.position = newPos;
+
+                // 3) Attach as a BaseUnit occupant on the tile
+                BaseUnit spawnerUnit = spawnerObj.GetComponent<BaseUnit>();
+                if (spawnerUnit != null)
+                {
+                    spawnTile.SetUnit(spawnerUnit, false);
+
+                    // 4) Now that OccupiedTile is set, call InitializeSpawner()
+                    Spawner spawnerScript = spawnerObj.GetComponent<Spawner>();
+                    if (spawnerScript != null)
+                    {
+                        spawnerScript.InitializeSpawner();
+                    }
+                    else
+                    {
+                        Debug.LogWarning(
+                            "KillObjective: SpawnerPrefab has a BaseUnit but no 'Spawner' script to initialize."
+                        );
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("KillObjective: SpawnerPrefab has no BaseUnit component! Can't attach to tile.");
+                }
             }
         }
 

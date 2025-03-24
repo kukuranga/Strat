@@ -135,7 +135,8 @@ public class Character : BaseUnit
             if (tile.occupiedUnit != null)
             {
                 BaseUnit unit = tile.occupiedUnit;
-                if ((_Targets & unit.Faction) == unit.Faction) // Check if the faction is included in the bitmask
+                // Corrected faction check - should be != 0
+                if ((_Targets & unit.Faction) != 0)
                 {
                     targetsInRange.Add(unit);
                 }

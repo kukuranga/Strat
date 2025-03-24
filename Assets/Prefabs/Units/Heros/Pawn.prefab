@@ -506,6 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownerUnit: {fileID: 6341732451180285242}
+  DamageMultiplier: 1
 --- !u!54 &6472443768679729895
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -735,7 +736,7 @@ MonoBehaviour:
   _ATBCombatCost: 3
   autoAttackCooldown: 2
   _AttackTarget: {fileID: 0}
-  _Targets: -1
+  _Targets: 6
   projectilePrefab: {fileID: 3038631225743543733, guid: 50e7ee8df3c55634c9aee92c27289d25,
     type: 3}
   projectileSpawnParent: {fileID: 2933853432048145674}

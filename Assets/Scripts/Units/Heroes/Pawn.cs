@@ -31,7 +31,12 @@ public class Pawn : Character
 
         // Self-attack or same faction? Skip
         if (target == this) return;
-        if (target.Faction == this.Faction) return;
+        //if (target.Faction == this.Faction) return;
+        if ((_Targets & target.Faction) == 0)
+        {
+            Debug.Log($"{UnitName} cannot attack {target.UnitName} (faction not in targets)");
+            return;
+        }
 
         // Check ATB
         if (ATBManager.Instance.GetATBAmount() < _ATBCombatCost) return;

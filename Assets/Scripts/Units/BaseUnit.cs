@@ -17,8 +17,8 @@ public class BaseUnit : MonoBehaviour
     public Faction Faction;
 
     [Header("Health")]
-    public int _MaxHealth;
-    public int _CurrentHealth;
+    public float _MaxHealth;
+    public float _CurrentHealth;
     [SerializeField] private HealthBar _HealthBar;
 
     [Header("ATB Costs")]
@@ -97,7 +97,7 @@ public class BaseUnit : MonoBehaviour
             Debug.Log($"{UnitName} Cleared Selected");
     }
 
-    public virtual void TakeDamage(int damage)
+    public virtual void TakeDamage(float damage)
     {
         _CurrentHealth -= damage;
         if (_HealthBar != null)

@@ -432,4 +432,21 @@ public class GridManager : Singleton<GridManager>
             return Vector2.right; // East
         }
     }
+
+    //Returns a random tile from the list of tiles
+    public Tile GetARandomTile()
+    {
+        if (_tiles == null || _tiles.Count == 0)
+        {
+            Debug.LogError("Tiles dictionary is not initialized or empty. Make sure GenerateGrid() is called before this method.");
+            return null;
+        }
+
+        // Get random key from dictionary
+        var keys = _tiles.Keys;
+        int randomIndex = Random.Range(0, keys.Count);
+        Vector2 randomKey = new List<Vector2>(keys)[randomIndex];
+
+        return _tiles[randomKey];
+    }
 }

@@ -18,4 +18,5 @@ MonoBehaviour:
   RequiredKills: 10
   SpawnerPrefab: {fileID: 8496454203060108412, guid: 63fc35da3f908b14ab19944d26e12c3e,
     type: 3}
+  NumberOfSpawners: 3
   spawnerCoordinates: {x: 2, y: 2}

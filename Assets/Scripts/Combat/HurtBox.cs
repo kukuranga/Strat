@@ -14,10 +14,11 @@ public class HurtBox : MonoBehaviour
 {
     [Tooltip("The BaseUnit that owns this HurtBox.")]
     public BaseUnit ownerUnit;
+    public float DamageMultiplier = 1;
 
     public void OnHit(int Damage, HitBox HB)
     {
-        ownerUnit.TakeDamage(Damage);
+        ownerUnit.TakeDamage(Damage * DamageMultiplier);
         HB.AfterHitEffect();
     }
 

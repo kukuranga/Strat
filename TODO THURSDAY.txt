@@ -3,29 +3,14 @@
 -PLEANTY OF EFFECTS
 
 -----PRIORITY---------
-- Randomly placing it on the map oposite the player
-- Refactor the spawn rotation of the objects along with the movement to use new orientation
-- change how the goblin attacks to use its own script to create the logic.
 
--***Change the current goblin move logic to just constantly update the target location instead of the current.
 
 -----Pending------
-
--BaseUnit Changes
-	-Add a different check for Object or Unit, if its a unit allow it to move and attack
-	 But as an object it cannot. this
-
--change the base unit class to fit the role of base unit rather than the role of the test unit
-	-change combat to be held in the base unit rather than the autoattack logic.(maybe)
 
 -Make a marker on the atb guage to show the amount needed to place the unit //Maybe make a red outline
 
 -combat, when a unit can move to an already occupied tile it should start combat
 	-add more indication that damage is being delt
-
-- make an addative nature to the move component
-	-this should add the movement amounts available using the values fed to the system
-	- do this by adding the
 
 -Make tiles have different movement values (Later)
 
@@ -38,10 +23,6 @@ Demo version
 	-this logic can also be used in the tutorial
 
 -Refactor Game code to use the game states
-
--Finish work on the kilLObjective
-	-create the spawner object and the enemy prefab
-	-set the object to spawn and attack the players units in range
 
 Start Working on audio by stealing the other audio Manager
 
@@ -63,18 +44,6 @@ Start Working on audio by stealing the other audio Manager
 
 -Movement, when the unit can move 2 spaces but the closest one is not moveable make it
 	stop the movement ability pased that point
-
--Combat, Attacks dont work as intended.
-	- simplify the combat more, take away the attack and auto attack ranges for each unit on separate scripts
-	- attacks should work simply. 
-	- if the unit is in range of an anemy attack the enemy
-	- only if the unit is not moving
-	- only if the unit can attack
-	- only if the unit is in range
-	
-	-to simplyfy attacks remove attack scriptable object logic and move it to the character
-	as a virtual method to be created by each individual unit.
-	-Auto attack should also be in the base character script and should just check the range for an enemy
 
 //---TODO--//
 
