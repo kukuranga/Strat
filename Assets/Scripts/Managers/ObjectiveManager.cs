@@ -15,9 +15,6 @@ public class ObjectiveManager : Singleton<ObjectiveManager>
             Debug.LogError("Objective list is empty. Add objectives to the list.");
             return;
         }
-
-        // Initialize with a random objective at start (optional)
-        //GetRandomObjective();
     }
 
     private void Update()
@@ -89,7 +86,7 @@ public class ObjectiveManager : Singleton<ObjectiveManager>
     public void OnUnitKilled(BaseUnit killedUnit)
     {
         // Check if the active objective is a KillObjective
-        if (_ActiveObjective is KillObjective killObjective) //TODO: Change this to be non player decided characters
+        if (_ActiveObjective is KillObjective killObjective && killedUnit._LastUnitThatDamaged.Faction == Faction.Hero) //TODO: Change this to be non player decided characters
         {
             killObjective.AddKill();
         }

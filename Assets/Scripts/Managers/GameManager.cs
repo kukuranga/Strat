@@ -36,6 +36,20 @@ public class GameManager : Singleton<GameManager>
         UpdateGameState(GameState.GenerateGrid);
     }
 
+    private void Update()
+    {
+        if(ObjectiveManager.Instance.CheckActiveObjective())
+        {
+            //Code for when the objective is coplete;
+
+            //TODO: Change the game state to end
+            // Tally the scores and roll a new objective
+            //this might need to be after the online is implemented
+
+        }
+        
+    }
+
     public void UpdateGameState(GameState newState)
     {
         State = newState;

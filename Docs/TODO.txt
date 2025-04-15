@@ -1,0 +1,86 @@
+-FAST PACED QUICK OBJECTIVE BASED STRATEGY GAME.
+-COLORFULL VISUALS AND QUICK MOVEMENTS
+-PLEANTY OF EFFECTS
+
+-----PRIORITY---------
+
+-Make the game loop fully work.
+	-Finish the todo in the game manager
+	-make the UI for each individual objective (kill objective)
+	-Make logic to desplay it only when set active
+		-do this by adding a claus in the objective itself to decide what kind of ui to use
+
+-Start implementing the audio system
+
+		
+-Start on implementing the online code for the game to function properly
+
+
+-----Pending------
+
+-Make a marker on the atb guage to show the amount needed to place the unit //Maybe make a red outline
+
+-combat, when a unit can move to an already occupied tile it should start combat
+	-add more indication that damage is being delt
+
+-Make tiles have different movement values (Later)
+
+- Objective Manager
+	-make the game logic to show winners and losers for each game best of 3)
+
+Demo version
+	-Make enemies spawn at the opposite side of the map
+	-have a set objective to kill a number of them before a time limit
+	-this logic can also be used in the tutorial
+
+-Refactor Game code to use the game states
+
+Start Working on audio by stealing the other audio Manager
+
+- Make the mage unit have a bonus damage when near each other
+
+-Make the zoom in and out use the scroll wheel
+
+-Change how movement works
+
+//Lightining Notes//
+-Create 2 more lightning preSets to be used
+-Can be moved to the unit effecteds position
+-Add Sound effect
+-Make Unit Take Damege On tile
+-Either Used In Mge Attack Or Lightening Storm
+- Link - https://youtu.be/XPh0jiqf0iQ 
+
+//----BUGS---//
+
+-Movement, when the unit can move 2 spaces but the closest one is not moveable make it
+	stop the movement ability pased that point
+
+//---TODO--//
+
+-UnitSpawn Location
+	-(Later) make a way to stop mountain tiles in the first spawnable amount
+
+-Change the button to create a unit to drg and drop rather than point and click
+
+- make the character selection ui
+	-add the atb cost and images
+
+- Make the move and combat options
+	-make and setup the buttons, using the selected unit in the unit manager
+	
+
+-make the unit shop
+	-make units spawn on clicks
+	-make the units move and interact
+-make the objective system
+
+-remove the FollowMouseCursor script from the Helpers folder is not used
+
+-make a messege system to show info like you cant place a unit etc
+
+
+------------Networking---------
+
+-Make sure only to send the information on the units.
+-make player 2's camera work on the other side of the game board

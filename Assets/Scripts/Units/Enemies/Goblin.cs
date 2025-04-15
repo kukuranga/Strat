@@ -10,9 +10,11 @@ public class Goblin : Enemies
     //public MeleeDaggerAttack daggerAttack; // Reference to the dagger attack ScriptableObject
     public GameObject Dagger;
 
+    [Header("Variables to set")]
+    [SerializeField] GameObject AggroIndicator;
+
     private HitBox DaggerHitBox;
     private float lastMoveTime;
-    private bool isAggro = false;
     private Character targetHero;
 
     protected override void Start()
@@ -40,6 +42,9 @@ public class Goblin : Enemies
             MoveRandomly();
             lastMoveTime = Time.time;
         }
+
+        //Updates the visuals for the aggro if there is a target
+        CheckAggro();
 
         //if (!isAggro)
         //{
@@ -74,6 +79,20 @@ public class Goblin : Enemies
         //        isAggro = false;
         //    }
         //}
+    }
+
+    private void CheckAggro()
+    {
+        //ToDo: add any more info for aggro that needs to be set here
+        //eg. Draw a line to the target or draw the path the goblin will take to get to it
+        if(_AttackTarget != null)
+        {
+            AggroIndicator.SetActive(true);
+        }
+        else
+        {
+            AggroIndicator.SetActive(false);
+        }
     }
 
     private void MoveRandomly()
@@ -166,7 +185,6 @@ public class Goblin : Enemies
         if (closestHero != null)
         {
             targetHero = closestHero;
-            isAggro = true;
         }
         else
         {

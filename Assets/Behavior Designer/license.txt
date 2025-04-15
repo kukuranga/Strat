@@ -1,0 +1,2 @@
+This package is to be used for educational purposes only. If you wish to use this for asset for commercial use, you must purchase a copy from
+the Unity asset store.

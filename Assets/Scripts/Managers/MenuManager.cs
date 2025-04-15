@@ -42,7 +42,10 @@ public class MenuManager : Singleton<MenuManager>
         }
         _selectedObjectHero.GetComponentInChildren<TextMeshProUGUI>().text = _Unit.UnitName;
         _selectedObjectHero.SetActive(true);
-        _AbilityUI.SetActive(true);
+        
+        //Only displays the UI for heros
+        if(_Unit.Faction == Faction.Hero)
+            _AbilityUI.SetActive(true);
     }
 
     public void ClearSelectedHero()

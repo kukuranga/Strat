@@ -10,6 +10,7 @@ public class HitBox : MonoBehaviour
 
     [Tooltip("Which faction owns this HitBox (so we don't damage allies).")]
     public Faction factionOwner;
+    public BaseUnit _OwnerUnit;
 
     [Tooltip("Whether the HitBox should despawn after hitting a target.")]
     public bool shouldDespawn = true; // Default to true for backward compatibility

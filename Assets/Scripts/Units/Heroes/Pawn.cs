@@ -70,6 +70,7 @@ public class Pawn : Character
                 // Set the initial direction toward the target
                 projHitBox.travelDirection = (target.transform.position - projectileSpawnParent.position).normalized;
                 projHitBox.factionOwner = this.Faction;
+                projHitBox._OwnerUnit = this;
                 projHitBox.targetUnit = target; // Assign the target unit (optional)
             }
         }

@@ -1,0 +1,115 @@
+--This Document will contain all information on the design of the three base units in the game--
+
+---------------Light Unit---------------------------------------
+	-Main Damage source
+	-Low Utility
+
+-Ability1-
+ -Name- Turret Mode
+ -Cost- High
+
+The Light Unit becomes a turret and looses the ability to move for a moment in time.
+In this mode the rate of attacks increase.
+
+
+-Ability2-
+ -Name-
+ -Cost-
+
+
+-Passive- 
+
+-Stats-
+	Health- Low
+	Damage- Med
+	Range- High
+	Movement- Med
+
+
+-Description-
+The light units will be the major damage dealer through the early stages of the game.
+
+-Visuals-
+A Basic Soldier baring a gun.
+
+
+---------------Meduim Unit---------------------------------------
+	-
+
+-Ability1-
+ -Name- Healing Staff
+ -Cost- High
+
+
+-Ability2-
+ -Name-
+ -Cost-
+
+
+-Passive- 
+
+-Stats-
+	Health-
+	Damage- 
+	Range-
+	Movement-
+
+
+-Description-
+
+-Visuals-
+
+
+---------------Heavy Unit---------------------------------------
+	-
+
+-Ability1-
+ -Name- Push
+ -Cost- Low
+
+
+-Ability2-
+ -Name- Rock
+ -Cost- Med
+
+
+-Passive- 
+
+-Stats-
+	Health-
+	Damage- 
+	Range-
+	Movement-
+
+
+-Description-
+
+-Visuals-
+
+
+
+---------------Template Unit---------------------------------------
+	-
+
+-Ability1-
+ -Name-
+ -Cost-
+
+
+-Ability2-
+ -Name-
+ -Cost-
+
+
+-Passive- 
+
+-Stats-
+	Health-
+	Damage- 
+	Range-
+	Movement-
+
+
+-Description-
+
+-Visuals-

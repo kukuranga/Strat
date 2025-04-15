@@ -15,6 +15,7 @@ public class BaseUnit : MonoBehaviour
     public string UnitDescription;
     public Tile OccupiedTile;
     public Faction Faction;
+    public BaseUnit _LastUnitThatDamaged;
 
     [Header("Health")]
     public float _MaxHealth;
@@ -109,6 +110,12 @@ public class BaseUnit : MonoBehaviour
         if (_CurrentHealth <= 0)
             Die();
     }
+
+    public void SetLastUnitDamaged(BaseUnit _Unit)
+    {
+        _LastUnitThatDamaged = _Unit;
+    }
+
 
     public virtual void ResetUnit()
     {
