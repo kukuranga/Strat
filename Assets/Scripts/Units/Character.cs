@@ -9,6 +9,7 @@ public class Character : BaseUnit
     public float moveSpeed = 3f;
     public float rotateSpeed = 360f;
     public bool isMoving = false;
+    public bool isRotating = false;
 
     [Header("Attack")]
     public int AutoAttackRange;
@@ -37,7 +38,7 @@ public class Character : BaseUnit
         base.Update();
 
         // Check if the unit is ready to auto-attack
-        if (Time.time >= nextAutoAttackTime && !isMoving && !isAttacking)
+        if (Time.time >= nextAutoAttackTime && !isMoving && !isAttacking && !isRotating)
         {
             // Get all targets in range
             List<BaseUnit> targetsInRange = GetTargetsInRange();
@@ -215,7 +216,6 @@ public class Character : BaseUnit
 
     private IEnumerator FollowPath()
     {
-        isMoving = true;
 
         while (_currentPathIndex < _currentPath.Count)
         {
@@ -251,8 +251,6 @@ public class Character : BaseUnit
             ATBManager.Instance.PayATBCost(_ATBMoveCost);
         }
 
-        isMoving = false;
-
         // Check if the unit is still selected before toggling combat visuals
         if (PlayerManager.Instance._SelectedUnit == this)
         {
@@ -262,13 +260,13 @@ public class Character : BaseUnit
 
     private IEnumerator MoveUnitRoutine(Vector3 targetPos)
     {
-        isMoving = true;
 
         Vector3 startPos = transform.position;
         float startZ = startPos.z;
         targetPos.z = startZ;
 
         // 1) Rotate first
+        isRotating = true;
         {
             Vector3 direction = targetPos - transform.position;
             direction.z = 0f;
@@ -291,8 +289,11 @@ public class Character : BaseUnit
                 transform.rotation = targetRotation;
             }
         }
+        isRotating = false;
 
         // 2) Move second
+        isMoving = true;
+
         while (Vector3.Distance(transform.position, targetPos) > 0.01f)
         {
             transform.position = Vector3.MoveTowards(

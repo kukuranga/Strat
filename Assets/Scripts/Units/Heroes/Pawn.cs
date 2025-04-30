@@ -5,12 +5,33 @@ using UnityEngine;
 public class Pawn : Character
 {
     [Header("Pawn Attributes")]
+    public Animator _Animator;
     public GameObject projectilePrefab;
     public Transform projectileSpawnParent;
 
+    [SerializeField] private float _animationInterval = 5f; // Time between animations in seconds
+    private float _timer;
+
     protected override void Update()
     {
-        base.Update();
+        base.Update(); // Only if you're actually overriding something
+
+        _timer -= Time.deltaTime;
+
+        if (_timer <= 0f)
+        {
+            //_Animator.SetTrigger("Idle_2");
+            _timer = _animationInterval; // Reset the timer
+        }
+
+        if(isMoving)
+        {
+            _Animator.SetBool("Walking", true);
+        }
+        else
+        {
+            _Animator.SetBool("Walking", false);
+        }
     }
 
     public override void Ability1()
@@ -45,16 +66,32 @@ public class Pawn : Character
         StartCoroutine(AutoAttackRoutine(target));
     }
 
+    private BaseUnit _TempTarget;
+
     private IEnumerator AutoAttackRoutine(BaseUnit target)
     {
         isAttacking = true;
+        _TempTarget = target;
 
         // 1) Pay cost
         ATBManager.Instance.PayATBCost(_ATBCombatCost);
 
+        _Animator.SetTrigger("Attack");
+
         // 2) Rotate toward the target BEFORE spawning the projectile
         yield return RotateUnitTowards(target.transform.position);
+        //transform.rotation = Quaternion.Euler(0, 0, -90);
 
+
+        // 4) Apply cooldown
+        nextAutoAttackTime = Time.time + autoAttackCooldown;
+
+        isAttacking = false;
+        yield break;
+    }
+
+    public void ShootEvent()
+    {
         // 3) Spawn projectile
         if (projectilePrefab != null && projectileSpawnParent != null)
         {
@@ -68,17 +105,11 @@ public class Pawn : Character
             if (projHitBox != null)
             {
                 // Set the initial direction toward the target
-                projHitBox.travelDirection = (target.transform.position - projectileSpawnParent.position).normalized;
+                projHitBox.travelDirection = (_TempTarget.transform.position - projectileSpawnParent.position).normalized;
                 projHitBox.factionOwner = this.Faction;
                 projHitBox._OwnerUnit = this;
-                projHitBox.targetUnit = target; // Assign the target unit (optional)
+                projHitBox.targetUnit = _TempTarget; // Assign the target unit (optional)
             }
         }
-
-        // 4) Apply cooldown
-        nextAutoAttackTime = Time.time + autoAttackCooldown;
-
-        isAttacking = false;
-        yield break;
     }
 }

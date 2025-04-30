@@ -13,11 +13,13 @@ In this mode the rate of attacks increase.
 
 
 -Ability2-
- -Name-
- -Cost-
+ -Name- Greenada
+ -Cost- High
+
+The unit sends out a greenade that will attach to objects and units and can be detonated by the unit
 
 
--Passive- 
+-Passive- Slight Damage boost to units 1 tile around it
 
 -Stats-
 	Health- Low
@@ -31,6 +33,9 @@ The light units will be the major damage dealer through the early stages of the 
 
 -Visuals-
 A Basic Soldier baring a gun.
+
+-Animations-
+ Idle,Idle2,Idle3,Dance,Celebrate,Shoot,throow grenade, Turret mode, TakeDamage
 
 
 ---------------Meduim Unit---------------------------------------
