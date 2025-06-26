@@ -79,7 +79,7 @@ public class Enemies : BaseUnit
         Debug.Log($"{UnitName} is auto-attacking {target.UnitName}.");
 
         // Example: Deal damage to the target
-        target.TakeDamage(10); // Replace with your damage logic
+        target.TakeDamage(10, this); // Replace with your damage logic
 
         // Set the unit to the attacking state
         isAttacking = true;

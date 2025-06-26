@@ -16,6 +16,7 @@ public class BaseUnit : MonoBehaviour
     public Tile OccupiedTile;
     public Faction Faction;
     public BaseUnit _LastUnitThatDamaged;
+    public CharacterTextBox _CharacterTextBox;
 
     [Header("Health")]
     public float _MaxHealth;
@@ -98,7 +99,7 @@ public class BaseUnit : MonoBehaviour
             Debug.Log($"{UnitName} Cleared Selected");
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage , BaseUnit _DamagingUnit)
     {
         _CurrentHealth -= damage;
         if (_HealthBar != null)
@@ -106,6 +107,8 @@ public class BaseUnit : MonoBehaviour
 
         // Optional: Add to some global ATB
         ATBManager.Instance.AddToATB(damage * 0.5f);
+
+        SetLastUnitDamaged(_DamagingUnit);
 
         if (_CurrentHealth <= 0)
             Die();
@@ -125,6 +128,11 @@ public class BaseUnit : MonoBehaviour
 
         OccupiedTile = null;
         ToggleInteraction(false);
+    }
+
+    public virtual void UseAbility(Tile tile)
+    {
+        Debug.Log("Ability used");
     }
 
     public virtual void Die()

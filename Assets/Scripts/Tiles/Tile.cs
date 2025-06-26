@@ -13,13 +13,17 @@ public class Tile : MonoBehaviour
     [SerializeField] private GameObject _SpawnableTile;
     [SerializeField] private GameObject _SelectedTile;
     [SerializeField] private GameObject _CombatTile;
+    [SerializeField] private GameObject _AbilityTile;
     public bool _isWalkable;
 
     public BaseUnit occupiedUnit;
+    public BaseUnit AbilityUnit;
+    public BaseItem OccupiedItem;
     public bool walkable => _isWalkable && occupiedUnit == null;
     public bool _Spawnable = false; // This shows if a tile is available for unit spawning.
     public bool _Selected = false;
     public bool _Combat = false;
+    public bool _Ability = false;
 
     // A* Pathfinding properties
     public int GCost; // Cost from start to this tile
@@ -32,6 +36,14 @@ public class Tile : MonoBehaviour
         _SpawnableTile.SetActive(_Spawnable && PlayerManager.Instance._HasUnitInHand);
         _SelectedTile.SetActive(_Selected);
         _CombatTile.SetActive(_Combat);
+
+        if (_Ability)
+        {
+            if (PlayerManager.Instance._SelectedUnit == null || PlayerManager.Instance._SelectedUnit != AbilityUnit)
+            {
+                ClearAbility();
+            }
+        }
     }
 
     public virtual void Init(int x, int y)
@@ -98,7 +110,7 @@ public class Tile : MonoBehaviour
                 }
             }
             // CASE 2: Tile is empty, but a unit is selected
-            else if (PlayerManager.Instance._SelectedUnit != null && _Selected)
+            else if (PlayerManager.Instance._SelectedUnit != null && _Selected && !_Ability)
             {
                 if (PlayerManager.Instance._SelectedUnit is Character characterSelected)
                 {
@@ -109,7 +121,12 @@ public class Tile : MonoBehaviour
                     OnMouseDown_EmptyWithStructure(structureSelected);
                 }
             }
-            // CASE 3: If the player has a unit in hand and tile is spawnable
+            // CASE 3: If the Tile is an ability tile and has an ability unit selected
+            else if(_Ability && AbilityUnit != null)
+            {
+                AbilityUnit.UseAbility(this);    
+            }
+            // CASE 4: If the player has a unit in hand and tile is spawnable
             else
             {
                 if (PlayerManager.Instance._HasUnitInHand && _Spawnable)
@@ -193,6 +210,24 @@ public class Tile : MonoBehaviour
     // ------------------------------------------------------------------------
     // SETTING & SPAWNING
     // ------------------------------------------------------------------------
+    public void SetAbility(BaseUnit unit)
+    {
+        //Cant select for ability if tile is occupied
+        if (occupiedUnit != null)
+            return;
+
+        _AbilityTile.SetActive(true);
+        AbilityUnit = unit;
+        _Ability = true;
+    }
+
+    public void ClearAbility()
+    {
+        _AbilityTile.SetActive(false);
+        _Ability = false;
+        AbilityUnit = null;
+    }
+
     public void SetUnit(BaseUnit unit, bool init)
     {
         // Clear old occupant
@@ -250,6 +285,25 @@ public class Tile : MonoBehaviour
         {
             Debug.Log("Cannot afford to place the unit.");
         }
+    }
+
+    public void SpawnItem(BaseItem item)
+    {
+        if (OccupiedItem == null)
+        {
+            OccupiedItem = item;
+        }
+        else
+        {
+            if (OccupiedItem.Priority < item.Priority)
+            {
+                OccupiedItem.DestroyItem();
+                OccupiedItem = item;
+            }
+            else
+                item.DestroyItem();
+        }
+        OccupiedItem.transform.position = new Vector3(this.transform.position.x, this.transform.position.y , -1);
     }
 
     // ------------------------------------------------------------------------

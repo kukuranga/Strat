@@ -40,6 +40,12 @@ public class HitBox : MonoBehaviour
                 hurtBox.OnHit(defaultDamage, this);
             }
         }
+
+        ItemHurtBox itemhurtBox = other.GetComponent<ItemHurtBox>();
+        if (itemhurtBox != null && itemhurtBox.ownerItem != null)
+        {
+            itemhurtBox.OnHit(this);
+        }
     }
 
     private void Update()

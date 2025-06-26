@@ -56,6 +56,8 @@ Start Working on audio by stealing the other audio Manager
 -Movement, when the unit can move 2 spaces but the closest one is not moveable make it
 	stop the movement ability pased that point
 
+-When an attack is stopped midway the unit becomes uninteractable because IsAttacking bool is still true
+
 //---TODO--//
 
 -UnitSpawn Location

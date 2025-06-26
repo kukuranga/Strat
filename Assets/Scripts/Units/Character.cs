@@ -10,6 +10,7 @@ public class Character : BaseUnit
     public float rotateSpeed = 360f;
     public bool isMoving = false;
     public bool isRotating = false;
+    public bool CanMove = true;
 
     [Header("Attack")]
     public int AutoAttackRange;
@@ -18,6 +19,10 @@ public class Character : BaseUnit
     public int _ATBCombatCost;
     public float autoAttackCooldown;
     public BaseUnit _AttackTarget;
+    public float Ability1CoolDown;
+    public float Ability2CoolDown; //TODO: Create the logic for ability cooldowns
+    public float Ability1CoolDownTime;
+    public float Ability2CoolDownTime;
 
     [EnumFlags] public Faction _Targets;
 
@@ -56,6 +61,8 @@ public class Character : BaseUnit
                 nextAutoAttackTime = Time.time + autoAttackCooldown;
             }
         }
+
+        
     }
 
     #region Combat Logic
@@ -87,7 +94,7 @@ public class Character : BaseUnit
         Debug.Log($"{UnitName} is auto-attacking {target.UnitName}.");
 
         // Example: Deal damage to the target
-        target.TakeDamage(10); // Replace with your damage logic
+        target.TakeDamage(10, this); // Replace with your damage logic
 
         // Set the unit to the attacking state
         isAttacking = true;
@@ -105,12 +112,15 @@ public class Character : BaseUnit
 
     public void ToggleAutoAttackRangeVisual(bool show)
     {
-        List<Tile> tilesInRange = GetAllTilesInAutoAttackRange();
-        foreach (Tile tile in tilesInRange)
+        if (_Interactable)
         {
-            if (tile != null)
+            List<Tile> tilesInRange = GetAllTilesInAutoAttackRange();
+            foreach (Tile tile in tilesInRange)
             {
-                tile.SetCombatTile(show);
+                if (tile != null)
+                {
+                    tile.SetCombatTile(show);
+                }
             }
         }
         //Debug.Log($"Toggled combat visuals on {tilesInRange.Count} tiles. Show: {show}");
@@ -123,6 +133,15 @@ public class Character : BaseUnit
         {
             tilesInRange.Remove(OccupiedTile);
         }
+        return tilesInRange;
+    }
+
+    public List<Tile> GetAllTilesInRange(int range)
+    {
+        List<Tile> tilesInRange = GridManager.Instance.GetTilesInRadius(OccupiedTile, range);
+
+        tilesInRange.Remove(OccupiedTile);
+
         return tilesInRange;
     }
 
@@ -163,6 +182,13 @@ public class Character : BaseUnit
 
     public void MoveToDestination(Tile destinationTile)
     {
+        if(!CanMove)
+        {
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogError("CanMove is false. Cannot move.");
+            return;
+        }
+
         if (OccupiedTile == null)
         {
             if (GameManager.Instance._DebuggerMode)
