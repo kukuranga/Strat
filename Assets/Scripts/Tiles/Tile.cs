@@ -51,7 +51,7 @@ public class Tile : MonoBehaviour
         _coordinates = new Vector2Int(x, y);
     }
 
-    private void OnMouseEnter()
+    private void OnMouseEnter() //ON CLICK
     {
         _highlight.SetActive(true);
         MenuManager.Instance.ShowTileInfo(this);
@@ -63,7 +63,7 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void OnMouseExit()
+    private void OnMouseExit() // ON CLICK BUTTON RELEASE
     {
         _highlight.SetActive(false);
         MenuManager.Instance.ShowTileInfo(null);
@@ -74,7 +74,7 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void OnMouseOver()
+    private void OnMouseOver() // ON HOVER
     {
         // Detect right-click while the mouse is over the tile
         if (Input.GetMouseButtonDown(1)) // Right-click
@@ -90,7 +90,7 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+    private void OnMouseDown() //ON MOUSE CLICK
     {
         if (GameManager.Instance._DebuggerMode)
             Debug.Log("Tile clicked: " + _coordinates);

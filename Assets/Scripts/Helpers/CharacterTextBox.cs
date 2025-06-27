@@ -14,8 +14,8 @@ public class CharacterTextBox : MonoBehaviour
     private Vector3 originalPosition;
     private Color originalColor;
     private float fadeDuration = 2f;
-    private float moveSpeed = 0.5f;
     private Coroutine currentAnimation;
+    private bool _IsActive = false;
 
     // Reference to main camera for facing
     private Camera mainCamera;
@@ -37,6 +37,11 @@ public class CharacterTextBox : MonoBehaviour
         if (mainCamera != null)
         {
             transform.LookAt(transform.position + mainCamera.transform.forward);
+        }
+
+        if(_IsActive)
+        {
+            transform.position += new Vector3(0, 0, -0.01f);
         }
     }
 
@@ -66,12 +71,10 @@ public class CharacterTextBox : MonoBehaviour
         float elapsedTime = 0f;
         Vector3 startPosition = transform.localPosition;
         Color startColor = _Text.color;
+        _IsActive = true;
 
         while (elapsedTime < fadeDuration)
         {
-            // Move the text up over time
-            transform.localPosition = startPosition + Vector3.up * (moveSpeed * elapsedTime);
-
             // Fade the text over time
             float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
             _Text.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
@@ -87,6 +90,7 @@ public class CharacterTextBox : MonoBehaviour
     public void ClearMsg()
     {
         _Text.text = "";
+        _IsActive = false;
         _Text.gameObject.SetActive(false);
         transform.localPosition = originalPosition;
     }
