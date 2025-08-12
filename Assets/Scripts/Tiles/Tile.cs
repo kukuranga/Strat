@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 public class Tile : MonoBehaviour
@@ -53,6 +54,10 @@ public class Tile : MonoBehaviour
 
     private void OnMouseEnter() //ON CLICK
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         _highlight.SetActive(true);
         MenuManager.Instance.ShowTileInfo(this);
 
@@ -92,6 +97,10 @@ public class Tile : MonoBehaviour
 
     private void OnMouseDown() //ON MOUSE CLICK
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         if (GameManager.Instance._DebuggerMode)
             Debug.Log("Tile clicked: " + _coordinates);
 

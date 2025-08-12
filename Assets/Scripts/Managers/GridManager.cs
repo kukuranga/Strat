@@ -387,17 +387,20 @@ public class GridManager : Singleton<GridManager>
                 }
                 else
                 {
-                    Debug.LogWarning($"Closest tile at {closestTileCoords} is not walkable or is occupied.");
+                    if (GameManager.Instance._DebuggerMode)
+                        Debug.LogWarning($"Closest tile at {closestTileCoords} is not walkable or is occupied.");
                 }
             }
             else
             {
-                Debug.LogWarning($"Tile at {closestTileCoords} not found in the grid.");
+                if (GameManager.Instance._DebuggerMode)
+                    Debug.LogWarning($"Tile at {closestTileCoords} not found in the grid.");
             }
         }
         else
         {
-            Debug.LogWarning($"Closest tile coordinates {closestTileCoords} are out of grid bounds.");
+            if (GameManager.Instance._DebuggerMode)
+                Debug.LogWarning($"Closest tile coordinates {closestTileCoords} are out of grid bounds.");
         }
 
         return null;

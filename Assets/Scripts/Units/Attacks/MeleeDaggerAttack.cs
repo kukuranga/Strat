@@ -8,6 +8,7 @@ public class MeleeDaggerAttack : Attack
     public float daggerMoveDistance = 1f; // Distance the dagger moves along the Y-axis
     public float daggerMoveSpeed = 10f; // Speed at which the dagger moves
     public float daggerRetractSpeed = 5f; // Speed at which the dagger retracts
+    public bool UseSPA;
 
     public override void PerformAttack(Character attacker, HurtBox target)
     {
@@ -89,7 +90,7 @@ public class MeleeDaggerAttack : Attack
         {
             if (GameManager.Instance._DebuggerMode)
                 Debug.Log($"{attacker.UnitName} hit {target.ownerUnit.UnitName}!");
-            target.OnHit(1, null); // Deal damage to the target
+            target.OnHit(1, Acc, UseSPA , null); // Deal damage to the target
         }
 
         // 7) Retract the dagger

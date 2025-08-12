@@ -10,8 +10,7 @@ public class Goblin : Enemies
     //public MeleeDaggerAttack daggerAttack; // Reference to the dagger attack ScriptableObject
     public GameObject Dagger;
 
-    [Header("Variables to set")]
-    [SerializeField] GameObject AggroIndicator;
+    [Header("Variables to set")]    
 
     private HitBox DaggerHitBox;
     private float lastMoveTime;

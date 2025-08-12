@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bomb : BaseItem
 {
     public GameObject _ParentGameObject;
+    public GameObject _PSBombSetOff;
     public BaseUnit _Owner;
     public GameObject _HitBox;
     public float _BombTickTime = 0.5f;
@@ -22,11 +23,13 @@ public class Bomb : BaseItem
         if(_HB != null)
         {
             _HB.factionOwner = _Owner.Faction;
+            _HB._OwnerUnit = _Owner;
         }
 
         if(_AutoBlow && !_AlreadyDetonated) StartCoroutine(Detonaite());
 
         _HitBox.transform.position = this.transform.position;
+        _PSBombSetOff.transform.position = this.transform.position;
     }
 
     public void Initialize(BaseUnit Owner)
@@ -54,6 +57,7 @@ public class Bomb : BaseItem
     private IEnumerator Detonaite()
     {
         _AlreadyDetonated = true;
+        _PSBombSetOff.SetActive(true);
 
         ReverseMaterials();
         yield return new WaitForSeconds(_BombTickTime);
@@ -66,6 +70,7 @@ public class Bomb : BaseItem
         ReverseMaterials();
         yield return new WaitForSeconds(_BombTickTime);
 
+        _PSBombSetOff.SetActive(false);
         _HitBox.SetActive(true);
 
         //yield return new WaitForSeconds(_BombTickTime * 4);

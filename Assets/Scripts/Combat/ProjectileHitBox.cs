@@ -63,7 +63,7 @@ public class ProjectileHitBox : HitBox
             if (!_hitTargets.Contains(hurtBox))
             {
                 _hitTargets.Add(hurtBox);
-                hurtBox.OnHit(defaultDamage, this);
+                hurtBox.OnHit(defaultDamage, Acc, UseSPA,this);
 
                 // If the projectile has a target unit and it hits that unit, destroy the projectile
                 if (targetUnit != null && hurtBox.ownerUnit == targetUnit)

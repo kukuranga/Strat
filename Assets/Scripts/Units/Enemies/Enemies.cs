@@ -27,6 +27,8 @@ public class Enemies : BaseUnit
     private List<Tile> _currentPath;
     private int _currentPathIndex;
 
+   public GameObject AggroIndicator;
+
     protected override void Start()
     {
         base.Start();
@@ -52,9 +54,15 @@ public class Enemies : BaseUnit
                 // Try to auto-attack the highest-priority target
                 BaseUnit target = targetsInRange[0];
                 TryAutoAttack(target);
+                AggroIndicator.SetActive(true);
+
 
                 // Set the next auto-attack time based on the cooldown
                 nextAutoAttackTime = Time.time + autoAttackCooldown;
+            }
+            else
+            {
+                AggroIndicator.SetActive(false);
             }
         }
     }
@@ -79,7 +87,7 @@ public class Enemies : BaseUnit
         Debug.Log($"{UnitName} is auto-attacking {target.UnitName}.");
 
         // Example: Deal damage to the target
-        target.TakeDamage(10, this); // Replace with your damage logic
+        //target.TakeDamage(10, this); // Replace with your damage logic
 
         // Set the unit to the attacking state
         isAttacking = true;

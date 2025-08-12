@@ -34,7 +34,7 @@ public class DaggerHitBox : HitBox
                 HurtBox hurtBox = target.GetComponentInChildren<HurtBox>();
                 if (hurtBox != null)
                 {
-                    hurtBox.OnHit(damage, this); // Pass 'this' as the HitBox
+                    hurtBox.OnHit(damage, Acc, UseSPA, this); // Pass 'this' as the HitBox
                 }
 
                 // Destroy the dagger after hitting the target

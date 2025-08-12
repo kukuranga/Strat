@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Character : BaseUnit
 {
@@ -14,15 +15,16 @@ public class Character : BaseUnit
 
     [Header("Attack")]
     public int AutoAttackRange;
-    public bool isAttacking = false;
+    [HideInInspector]public bool isAttacking = false;
     public float nextAutoAttackTime = 0f;
     public int _ATBCombatCost;
     public float autoAttackCooldown;
     public BaseUnit _AttackTarget;
     public float Ability1CoolDown;
-    public float Ability2CoolDown; //TODO: Create the logic for ability cooldowns
+    public float Ability2CoolDown;
     public float Ability1CoolDownTime;
     public float Ability2CoolDownTime;
+    public Slider _AttackSlider;
 
     [EnumFlags] public Faction _Targets;
 
@@ -36,6 +38,8 @@ public class Character : BaseUnit
         base.Start();
         _Type = BaseUnitType.Character;
         _pathfinding = new AStarPathfinding(GridManager.Instance);
+        Ability1CoolDown = Ability1CoolDownTime;
+        Ability2CoolDown = Ability2CoolDownTime;
     }
 
     protected override void Update()
@@ -43,12 +47,12 @@ public class Character : BaseUnit
         base.Update();
 
         // Check if the unit is ready to auto-attack
-        if (Time.time >= nextAutoAttackTime && !isMoving && !isAttacking && !isRotating)
+        if(nextAutoAttackTime >= autoAttackCooldown && !isMoving && !isAttacking && !isRotating)
         {
             // Get all targets in range
             List<BaseUnit> targetsInRange = GetTargetsInRange();
-
-            if (targetsInRange.Count > 0)
+        
+            if(targetsInRange.Count > 0)
             {
                 // Sort targets based on precedence in the _Targets list
                 targetsInRange.Sort((a, b) => GetTargetPriority(a.Faction).CompareTo(GetTargetPriority(b.Faction)));
@@ -58,11 +62,18 @@ public class Character : BaseUnit
                 TryAutoAttack(target);
 
                 // Set the next auto-attack time based on the cooldown
-                nextAutoAttackTime = Time.time + autoAttackCooldown;
+                nextAutoAttackTime = 0;
             }
         }
 
-        
+        if(Ability1CoolDown < Ability1CoolDownTime)
+            Ability1CoolDown += Time.deltaTime;
+        if (Ability2CoolDown < Ability2CoolDownTime)
+            Ability2CoolDown += Time.deltaTime;
+
+        nextAutoAttackTime += Time.deltaTime;
+
+        UpdateAutoAttackSlider();
     }
 
     #region Combat Logic
@@ -74,6 +85,7 @@ public class Character : BaseUnit
     public virtual void Ability2()
     {
         Debug.Log($"{UnitName} uses Ability2.");
+        Ability2CoolDown = 0;
     }
 
     public virtual void TryAutoAttack(BaseUnit target)
@@ -94,7 +106,7 @@ public class Character : BaseUnit
         Debug.Log($"{UnitName} is auto-attacking {target.UnitName}.");
 
         // Example: Deal damage to the target
-        target.TakeDamage(10, this); // Replace with your damage logic
+        //target.TakeDamage(10, this); // Replace with your damage logic
 
         // Set the unit to the attacking state
         isAttacking = true;
@@ -179,6 +191,13 @@ public class Character : BaseUnit
         }
     }
     #endregion
+
+    public void UpdateAutoAttackSlider()
+    {
+        _AttackSlider.gameObject.SetActive(nextAutoAttackTime != 0);
+
+        _AttackSlider.value = nextAutoAttackTime / autoAttackCooldown;
+    }
 
     public void MoveToDestination(Tile destinationTile)
     {

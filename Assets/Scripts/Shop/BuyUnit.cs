@@ -12,9 +12,13 @@ public class BuyUnit : MonoBehaviour
     {
         switch (_UnitType)
         {
-            case UnitType.TestUnit:
+            case UnitType.Pawn:
                 UnitManager.Instance.GetTestUnit(); //do something with the true/false statement coming from this
                 break;
+            case UnitType.Mage:
+                UnitManager.Instance.GetMageUnit();
+                break;
+
         }
     }
 }

@@ -8,6 +8,8 @@ public class BaseUnit : MonoBehaviour
 {
     public BaseUnitType _Type;
 
+    //TODO: ADD THE NEW STAT NUMBERS HERE
+
     [Header("Unit Data")]
     public bool InObjectPool;
     public int _AssignedPlayer;
@@ -17,6 +19,13 @@ public class BaseUnit : MonoBehaviour
     public Faction Faction;
     public BaseUnit _LastUnitThatDamaged;
     public CharacterTextBox _CharacterTextBox;
+
+    [Header("Combat Stats")]
+    public float Atk = 0; // Basic Attack value
+    public float SpAtk = 0; // Basic Special Attack value
+    public float Def = 0; // basic defence value
+    public float SpDef = 0; //basic special defence value
+    public float Eva = 0; // The evasion value of the unit
 
     [Header("Health")]
     public float _MaxHealth;
@@ -99,19 +108,76 @@ public class BaseUnit : MonoBehaviour
             Debug.Log($"{UnitName} Cleared Selected");
     }
 
-    public virtual void TakeDamage(float damage , BaseUnit _DamagingUnit)
+    //TODO: change the combat logic here
+    public virtual void TakeDamage(float damage, float Acc , bool UseSPA, BaseUnit _DamagingUnit)
     {
-        _CurrentHealth -= damage;
-        if (_HealthBar != null)
-            _HealthBar.UpdateHealthBar(_CurrentHealth, _MaxHealth);
 
-        // Optional: Add to some global ATB
-        ATBManager.Instance.AddToATB(damage * 0.5f);
+        float HitValue = Acc - Eva;
+        bool _Crit = false;
 
-        SetLastUnitDamaged(_DamagingUnit);
+        //To ensure attacks always have a chance to hit
+        if (HitValue < 25)
+            HitValue = 25;
 
-        if (_CurrentHealth <= 0)
-            Die();
+        float _Rand = Random.Range(1, 100);
+
+        if (HitValue == _Rand)
+            _Crit = true;
+
+        if(HitValue > _Rand)
+        {
+
+            float Pow;
+            if (UseSPA)
+                Pow = Atk;
+            else
+                Pow = SpAtk;
+            if(_Crit)
+                Pow *= 2;
+
+            float DMG = ((Pow * (_DamagingUnit.Atk / Def))/ 50) + 2;
+
+            Debug.Log(DMG + " Damage taken");
+
+            _CurrentHealth -= DMG;
+            if (_HealthBar != null)
+                _HealthBar.UpdateHealthBar(_CurrentHealth, _MaxHealth);
+
+            // Optional: Add to some global ATB
+            //ATBManager.Instance.AddToATB(damage * 0.5f);
+
+            SetLastUnitDamaged(_DamagingUnit);
+
+            if (_CurrentHealth <= 0)
+                Die();
+
+        }
+        else
+        {
+            //Miss
+            _CharacterTextBox.UpdateMessage("Miss");
+        }
+    }
+
+    public void HealDamage(float Amount)
+    {
+        _CurrentHealth += Amount;
+        UpdateHealth();
+
+        _CharacterTextBox.UpdateMessage("+" + Amount + " Health");
+        //TODO: Add visual here
+    }
+
+    public void UpdateHealth()
+    {
+        if(_CurrentHealth > _MaxHealth)
+        {
+            _CurrentHealth = _MaxHealth;
+        }
+        if(_CurrentHealth < 0)
+        {
+            _CurrentHealth = 0;
+        }
     }
 
     public void SetLastUnitDamaged(BaseUnit _Unit)

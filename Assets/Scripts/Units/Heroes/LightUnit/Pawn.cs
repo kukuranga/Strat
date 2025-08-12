@@ -27,6 +27,8 @@ public class Pawn : Character
         if (_timer <= 0f)
         {
             //_Animator.SetTrigger("Idle_2");
+            //if(CanMove && !isAttacking)
+                //Idle(); 
             _timer = _animationInterval; // Reset the timer
         }
 
@@ -40,31 +42,44 @@ public class Pawn : Character
         //}
     }
 
-    public override void Ability1()//Turret
+    public override void Ability1() //Turret
     {
-        Debug.Log("Pawn uses Ability1.");
-        StartCoroutine(TurretModeCoroutine());
+        base.Ability1();
 
+        if (Ability1CoolDown >= Ability1CoolDownTime)
+        {
+            Debug.Log("Pawn uses Ability1.");
+            StartCoroutine(TurretModeCoroutine());
+            Ability1CoolDown = 0;
+        }
+        Debug.Log("Pawn Ability1 on cooldown.");
+        
     }
 
     public override void Ability2() //Bomb
     {
-        Debug.Log("Pawn uses Ability2.");
-
-        //Step 1: highlight tiles around the unit
-        List<Tile> _bombTiles = GetAllTilesInRange(BombRange);
-        foreach(Tile t in _bombTiles)
+        base.Ability2();
+        if (Ability2CoolDown >= Ability2CoolDownTime)
         {
-            t.SetAbility(this);
-        }
+            Debug.Log("Pawn uses Ability2.");
 
-        List<Tile> combat = GetAllTilesInAutoAttackRange();
-        foreach(Tile t in combat)
-        {
-            t.SetCombatTile(false);
-        }
+            //Step 1: highlight tiles around the unit
+            List<Tile> _bombTiles = GetAllTilesInRange(BombRange);
+            foreach (Tile t in _bombTiles)
+            {
+                t.SetAbility(this);
+            }
 
-        CanMove = false;
+            List<Tile> combat = GetAllTilesInAutoAttackRange();
+            foreach (Tile t in combat)
+            {
+                t.SetCombatTile(false);
+            }
+
+            CanMove = false;
+            Ability2CoolDown = 0;
+        }
+        Debug.Log("Pawn Ability2 on cooldown.");
     }
 
     public override void UseAbility(Tile tile)
@@ -168,6 +183,7 @@ public class Pawn : Character
         ATBManager.Instance.PayATBCost(_ATBCombatCost);
 
         //_Animator.SetTrigger("Attack");
+        LiftUp();
 
         // 2) Rotate toward the target BEFORE spawning the projectile
         yield return RotateUnitTowards(target.transform.position);
@@ -203,5 +219,111 @@ public class Pawn : Character
                 projHitBox.targetUnit = _TempTarget; // Assign the target unit (optional)
             }
         }
+    }
+
+    //---------- Animations --------------
+
+    public void Idle()
+    {
+        // wiggle side to side
+        StartCoroutine(IdleAnim());
+    }
+
+   
+
+    public void Dance()
+    {
+        // wiggle and rotate around
+    }
+
+    public void LiftUp()
+    {
+        StartCoroutine(LiftAnim());
+    }
+
+    public void DropDown()
+    {
+
+    }
+
+    public void Attack()
+    {
+        //Lift up and aim down to attack
+    }
+
+    public void Walk()
+    {
+        //lift up and slam down after you move (might need to add an onMoveEnd animation
+    }
+
+    private IEnumerator LiftAnim()
+    {
+        float elapsedTime = 0f;
+        float duration = 0f;
+        Vector3 currentPos = transform.position;
+        Vector3 targetPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - 2);
+
+        while (elapsedTime < duration)
+        {
+            transform.position = Vector3.Lerp(currentPos, targetPos, elapsedTime/duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        yield return null;
+    }
+
+    private IEnumerator DrowDownAnim()
+    {
+        yield return null;
+    }
+
+    private IEnumerator IdleAnim()
+    {
+        // Define rotation parameters
+        float rotationAngle = 15f; // How far to rotate in degrees
+        float rotationSpeed = 0.5f; // Speed of rotation
+        float waitTime = 0.3f; // Time to wait between rotations
+
+        // Get initial rotation
+        Quaternion startRotation = transform.rotation;
+
+        Quaternion targetRotation = startRotation * Quaternion.Euler(0, 0, rotationAngle);
+        yield return RotateToTarget(targetRotation, rotationSpeed);
+        yield return new WaitForSeconds(waitTime);
+        if (!CanMove) { yield return null; }
+
+        // Rotate back to center
+        yield return RotateToTarget(startRotation, rotationSpeed);
+        yield return new WaitForSeconds(waitTime);
+        if (!CanMove) { yield return null; }
+
+        // Rotate left
+        targetRotation = startRotation * Quaternion.Euler(0, 0, -rotationAngle);
+        yield return RotateToTarget(targetRotation, rotationSpeed);
+        yield return new WaitForSeconds(waitTime);
+        if (!CanMove) { yield return null; }
+
+        // Rotate back to center
+        yield return RotateToTarget(startRotation, rotationSpeed);
+        yield return new WaitForSeconds(waitTime);
+        if (!CanMove) { yield return null; }
+    }
+
+    //to be used only for animation rotations
+    private IEnumerator RotateToTarget(Quaternion targetRotation, float duration)
+    {
+        Quaternion startRotation = transform.rotation;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            if (!CanMove) { break; }
+            transform.rotation = Quaternion.Lerp(startRotation, targetRotation, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure exact rotation at the end
+        transform.rotation = targetRotation;
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum AbilityType
 {
@@ -13,6 +14,25 @@ public class AbilityButton : MonoBehaviour
     [Header("Ability Settings")]
     [Tooltip("Select which ability this button will trigger.")]
     public AbilityType selectedAbility = AbilityType.Ability1;
+    public Slider _AbilitySlider;
+
+    private void Update()
+    {
+        //TODO: FIX THE VISUALS ON THE SLIDERS, AND THE VALUES ON EACH SLIDER UPDATING
+        if(PlayerManager.Instance._SelectedUnit != null)
+        {
+            Character _Char = PlayerManager.Instance._SelectedUnit.GetComponent<Character>();
+
+            if (selectedAbility == AbilityType.Ability1)
+            {
+                _AbilitySlider.value = _Char.Ability1CoolDown / _Char.Ability1CoolDownTime;
+            }
+            else if (selectedAbility == AbilityType.Ability2)
+            {
+                _AbilitySlider.value = _Char.Ability2CoolDown / _Char.Ability2CoolDownTime;
+            }
+        }
+    }
 
     public void OnButtonClicked()
     {

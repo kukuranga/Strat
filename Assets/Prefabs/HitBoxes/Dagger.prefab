@@ -128,8 +128,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f16bd327e21acb449f788e49e53e3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseSPA: 0
   defaultDamage: 1
+  Acc: 80
   factionOwner: 2
+  _OwnerUnit: {fileID: 0}
   shouldDespawn: 0
   _Targets: 5
 --- !u!1 &8413971538895972593

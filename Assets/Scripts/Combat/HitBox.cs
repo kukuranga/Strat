@@ -6,7 +6,9 @@ public class HitBox : MonoBehaviour
 {
     [Header("HitBox Settings")]
     [Tooltip("Default damage to deal when this HitBox connects.")]
+    public bool UseSPA;
     public int defaultDamage = 1;
+    public float Acc = 100; // percentage chance of move hitting
 
     [Tooltip("Which faction owns this HitBox (so we don't damage allies).")]
     public Faction factionOwner;
@@ -37,7 +39,7 @@ public class HitBox : MonoBehaviour
             if (!_hitTargets.Contains(hurtBox))
             {
                 _hitTargets.Add(hurtBox);
-                hurtBox.OnHit(defaultDamage, this);
+                hurtBox.OnHit(defaultDamage, Acc, UseSPA ,this);///------------------------------------------------Here-------------------------------------------------------
             }
         }
 

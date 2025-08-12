@@ -6,7 +6,8 @@ using UnityEngine;
 
 public enum UnitType
 {
-    TestUnit,
+    Pawn,
+    Mage,
 
 }
 public enum Faction
@@ -24,10 +25,10 @@ public class UnitManager : Singleton<UnitManager>
 
 
     //todo: create an object pooling of the TestHero prefabs
+    public Transform _ObjectSpawnPoints;
 
     #region Test ObjectPool
     public ObjectPool _TestObjects;
-    public Transform _ObjectSpawnPoints;
 
     public bool GetTestUnit()//(Vector3 _position, Quaternion _rotation)
     {
@@ -55,6 +56,35 @@ public class UnitManager : Singleton<UnitManager>
 
     #endregion
 
+
+    #region Mage ObjectPool
+    public ObjectPool _MageObjects;
+
+    public bool GetMageUnit()//(Vector3 _position, Quaternion _rotation)
+    {
+        if (!PlayerManager.Instance._HasUnitInHand)
+        {
+            //if (ATBManager.Instance.PayATBCost(_TestObjects.prefab.GetComponent<BaseUnit>()._ATBCost))
+            //TODO: simplify this to a single line
+            Vector3 _pos = new Vector3(0, 0, -1);
+            GameObject _obj = _MageObjects.GetObject(_pos, Quaternion.identity);
+            _obj.GetComponent<BaseUnit>().InitializeUnit();
+            PlayerManager.Instance.SetUnitInHand(_obj.GetComponent<BaseUnit>(), _obj);
+            return true;
+        }
+        return false;
+    }
+
+    public bool ReturnMageUnit()
+    {
+        if (PlayerManager.Instance._HasUnitInHand)
+        {
+            _MageObjects.ReturnObject(PlayerManager.Instance._UnitInHand.GameObject());
+        }
+        return false;
+    }
+
+    #endregion
     public void KillUnit(BaseUnit _unit)
     {
         if(_unit. InObjectPool)
