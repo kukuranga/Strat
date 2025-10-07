@@ -1,0 +1,47 @@
+------------------------Resource System Expanded-----------------------------------
+
+----Key Points-----
+
+-The different types of resources (Exploration, magic, mechanical)
+-Their lore and usage significance
+-how to obtain each kind
+-how to spend each kind
+
+---------------------Exploration (Green)--------------------------------
+
+--Lore--
+	The mystic of exploration and all the feelings that come along with that. it truely encapsulates the meaning
+	of freedom. this represents all resources that have to do with the overall world.
+	Plant,Sappling,growth,prosperity
+--Obtained--
+	each tile will have a chance to spawn one of these, moving around the map will automatically obtain these
+	other world map events will provide these
+--Spent--
+	items build with these will effect either your overall expansion and resources.
+
+
+----------------------Magic (Blue)---------------------------------------
+
+--Lore--
+	the resource that captures all things arcane. for the aspiring wizard and warlocks. using the power in all
+	objects and the power of your imagination to summon the elements to your will.
+	Crystals,Aura,stars,Clouds
+--Obtained--
+	one way will be by using the crystals made my the mage. //Figure out more//
+
+--Spent--
+	all things using the basic elements and magic/mystical elements will use this resource to its largest effect
+	EG. The mages Lightning field
+
+---------------------Mechanical (Red)-------------------------------------
+
+--Lore--
+	The technical side of the world. Using the expansion and technologiacl advancemets achieved by your units
+	these rapidly growing and always advancing.
+	Tech, Guns, gears
+--Obtained--
+	
+
+--Spent--
+	Items with technology basis use this resource to create and produce mechanical items and units.
+	

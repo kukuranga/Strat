@@ -12,6 +12,7 @@ public class Character : BaseUnit
     public bool isMoving = false;
     public bool isRotating = false;
     public bool CanMove = true;
+    public bool AttackConstant;
 
     [Header("Attack")]
     public int AutoAttackRange;
@@ -52,7 +53,7 @@ public class Character : BaseUnit
             // Get all targets in range
             List<BaseUnit> targetsInRange = GetTargetsInRange();
         
-            if(targetsInRange.Count > 0)
+            if(targetsInRange.Count > 0 && !AttackConstant)
             {
                 // Sort targets based on precedence in the _Targets list
                 targetsInRange.Sort((a, b) => GetTargetPriority(a.Faction).CompareTo(GetTargetPriority(b.Faction)));
@@ -64,6 +65,13 @@ public class Character : BaseUnit
                 // Set the next auto-attack time based on the cooldown
                 nextAutoAttackTime = 0;
             }
+            if(AttackConstant)
+            {
+                TryAutoAttack(this);
+                // Set the next auto-attack time based on the cooldown
+                nextAutoAttackTime = 0;
+            }
+            //Note: for the above method, the unit that attacks constantly will send itself as the base unit. this does not change the actual implimentation but it can be used later on 
         }
 
         if(Ability1CoolDown < Ability1CoolDownTime)
@@ -303,7 +311,7 @@ public class Character : BaseUnit
         }
     }
 
-    private IEnumerator MoveUnitRoutine(Vector3 targetPos)
+    protected virtual IEnumerator MoveUnitRoutine(Vector3 targetPos)
     {
 
         Vector3 startPos = transform.position;

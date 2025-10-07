@@ -168,6 +168,11 @@ MonoBehaviour:
   GCost: 0
   HCost: 0
   Parent: {fileID: 0}
+  GreenResource: {fileID: 2046607236975467366, guid: daf51a5010eae5242846d5a3d47816ff,
+    type: 3}
+  _GreenItemInterval: 10
+  _MaxIntervalTime: 100
+  _PercentageChanceOfSpawning: 15
   _baseColor: {r: 0, g: 0, b: 0, a: 0}
   _OffsetColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &6515526453621633782

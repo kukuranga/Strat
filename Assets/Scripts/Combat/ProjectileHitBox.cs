@@ -22,6 +22,10 @@ public class ProjectileHitBox : HitBox
 
     private float _timer = 0f;
 
+    public bool _OnHitProduceGreen;
+    public bool _OnHitProduceRed;
+    public bool _OnHitProduceBlue;
+
     private void Start()
     {
         // If a target unit is assigned, set the initial travel direction toward the target
@@ -64,6 +68,13 @@ public class ProjectileHitBox : HitBox
             {
                 _hitTargets.Add(hurtBox);
                 hurtBox.OnHit(defaultDamage, Acc, UseSPA,this);
+                if (_OnHitProduceGreen)
+                    ResourceManager.Instance.AddGreenResource(1);
+                if (_OnHitProduceRed)
+                    ResourceManager.Instance.AddRedResource(1);
+                if (_OnHitProduceBlue)
+                    ResourceManager.Instance.AddBlueResource(1);
+
 
                 // If the projectile has a target unit and it hits that unit, destroy the projectile
                 if (targetUnit != null && hurtBox.ownerUnit == targetUnit)

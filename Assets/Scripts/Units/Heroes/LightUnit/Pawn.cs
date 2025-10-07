@@ -9,11 +9,15 @@ public class Pawn : Character
     public GameObject projectilePrefab;
     public Transform projectileSpawnParent;
     public GameObject BombPrefab;
+    public GameObject FireObject;
 
     [Header("Ability Data")]
     public float _TurretModeStartupTime = 1f;
     public float _TurretTime = 5f;
     public int BombRange = 1;
+    public float _TurretATBCost;
+    public float _BombATBCost;
+    public int _BombRedCost;
 
     [SerializeField] private float _animationInterval = 5f; // Time between animations in seconds
     private float _timer;
@@ -32,13 +36,15 @@ public class Pawn : Character
             _timer = _animationInterval; // Reset the timer
         }
 
-        //if(isMoving)
+        //if (isMoving)
         //{
-        //    _Animator.SetBool("Walking", true);
+        //    //_Animator.SetBool("Walking", true);
+        //    FireObject.SetActive(true);
         //}
         //else
         //{
-        //    _Animator.SetBool("Walking", false);
+        //    //_Animator.SetBool("Walking", false);
+        //    FireObject.SetActive(false);
         //}
     }
 
@@ -46,19 +52,40 @@ public class Pawn : Character
     {
         base.Ability1();
 
+        if (_TurretATBCost > ATBManager.Instance.GetATBAmount())
+        {
+            _CharacterTextBox.UpdateMessage("Not enough ATB");
+            return;
+        }
+
         if (Ability1CoolDown >= Ability1CoolDownTime)
         {
             Debug.Log("Pawn uses Ability1.");
             StartCoroutine(TurretModeCoroutine());
             Ability1CoolDown = 0;
+            Debug.Log("Pawn Ability1 on cooldown.");
+
         }
-        Debug.Log("Pawn Ability1 on cooldown.");
-        
+
     }
 
     public override void Ability2() //Bomb
     {
         base.Ability2();
+
+        if (_BombATBCost > ATBManager.Instance.GetATBAmount())
+        {
+            _CharacterTextBox.UpdateMessage("Not enough ATB");
+            return;
+        }
+
+
+        if (_BombRedCost < ResourceManager.Instance.GetRedResource())
+        {
+            _CharacterTextBox.UpdateMessage("Not Enough Tech");
+            return;
+        }
+
         if (Ability2CoolDown >= Ability2CoolDownTime)
         {
             Debug.Log("Pawn uses Ability2.");
@@ -77,7 +104,6 @@ public class Pawn : Character
             }
 
             CanMove = false;
-            Ability2CoolDown = 0;
         }
         Debug.Log("Pawn Ability2 on cooldown.");
     }
@@ -126,6 +152,7 @@ public class Pawn : Character
     private IEnumerator PlaceBombCoroutine(Tile tile)
     {
         //TODO: Pay atb cost
+        Ability2CoolDown = 0;
 
         yield return RotateUnitTowards(tile.transform.position);
 
@@ -314,10 +341,21 @@ public class Pawn : Character
     {
         Quaternion startRotation = transform.rotation;
         float elapsedTime = 0f;
+        float angleToTarget = Vector3.SignedAngle(startRotation.eulerAngles, targetRotation.eulerAngles, Vector3.forward);
 
         while (elapsedTime < duration)
         {
             if (!CanMove) { break; }
+            if (angleToTarget > 0)
+            {
+                Debug.Log("clockwiseRotation");
+                FireObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("AntiClockwiseRotation");
+                FireObject.SetActive(true);
+            }
             transform.rotation = Quaternion.Lerp(startRotation, targetRotation, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -325,5 +363,12 @@ public class Pawn : Character
 
         // Ensure exact rotation at the end
         transform.rotation = targetRotation;
+    }
+
+    protected override IEnumerator MoveUnitRoutine(Vector3 targetPos)
+    {
+        FireObject.SetActive(true);
+        yield return StartCoroutine(base.MoveUnitRoutine(targetPos));
+        FireObject.SetActive(false);
     }
 }

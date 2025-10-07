@@ -8,8 +8,6 @@ public class BaseUnit : MonoBehaviour
 {
     public BaseUnitType _Type;
 
-    //TODO: ADD THE NEW STAT NUMBERS HERE
-
     [Header("Unit Data")]
     public bool InObjectPool;
     public int _AssignedPlayer;
@@ -178,6 +176,7 @@ public class BaseUnit : MonoBehaviour
         {
             _CurrentHealth = 0;
         }
+        _HealthBar.UpdateHealthBar(_CurrentHealth, _MaxHealth);
     }
 
     public void SetLastUnitDamaged(BaseUnit _Unit)

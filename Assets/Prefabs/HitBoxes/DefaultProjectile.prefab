@@ -97,14 +97,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07312803769e76d46a473b4f054fdd2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseSPA: 0
   defaultDamage: 1
+  Acc: 100
   factionOwner: 0
+  _OwnerUnit: {fileID: 0}
   shouldDespawn: 1
   _Targets: 6
   speed: 3
   lifeTime: 3
   travelDirection: {x: 0, y: 0, z: 1}
   targetUnit: {fileID: 0}
+  _OnHitProduceGreen: 0
+  _OnHitProduceRed: 1
+  _OnHitProduceBlue: 0
 --- !u!135 &1322994141414377461
 SphereCollider:
   m_ObjectHideFlags: 0
