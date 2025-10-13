@@ -26,6 +26,8 @@ public class Character : BaseUnit
     public float Ability1CoolDownTime;
     public float Ability2CoolDownTime;
     public Slider _AttackSlider;
+    public string Ability1Name;
+    public string Ability2Name;
 
     [EnumFlags] public Faction _Targets;
 
@@ -33,6 +35,7 @@ public class Character : BaseUnit
     private List<Tile> _currentPath;
     private int _currentPathIndex;
     private bool _waitingForATB = false;
+    public bool _IsPathfinding;
 
     protected override void Start()
     {
@@ -82,6 +85,7 @@ public class Character : BaseUnit
         nextAutoAttackTime += Time.deltaTime;
 
         UpdateAutoAttackSlider();
+
     }
 
     #region Combat Logic
@@ -272,6 +276,8 @@ public class Character : BaseUnit
 
         while (_currentPathIndex < _currentPath.Count)
         {
+            _IsPathfinding = true;
+
             Tile nextTile = _currentPath[_currentPathIndex];
 
             // Check if the next tile is occupied
@@ -303,6 +309,8 @@ public class Character : BaseUnit
             // Pay ATB cost after each step
             ATBManager.Instance.PayATBCost(_ATBMoveCost);
         }
+
+        _IsPathfinding = false;
 
         // Check if the unit is still selected before toggling combat visuals
         if (PlayerManager.Instance._SelectedUnit == this)

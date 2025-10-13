@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,7 @@ public class AbilityButton : MonoBehaviour
     [Tooltip("Select which ability this button will trigger.")]
     public AbilityType selectedAbility = AbilityType.Ability1;
     public Slider _AbilitySlider;
+    public TextMeshProUGUI _AbilityName;
 
     private void Update()
     {
@@ -26,10 +28,12 @@ public class AbilityButton : MonoBehaviour
             if (selectedAbility == AbilityType.Ability1)
             {
                 _AbilitySlider.value = _Char.Ability1CoolDown / _Char.Ability1CoolDownTime;
+                _AbilityName.text = _Char.Ability1Name;
             }
             else if (selectedAbility == AbilityType.Ability2)
             {
                 _AbilitySlider.value = _Char.Ability2CoolDown / _Char.Ability2CoolDownTime;
+                _AbilityName.text = _Char.Ability2Name;
             }
         }
     }
