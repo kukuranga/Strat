@@ -97,7 +97,6 @@ public class Character : BaseUnit
     public virtual void Ability2()
     {
         Debug.Log($"{UnitName} uses Ability2.");
-        Ability2CoolDown = 0;
     }
 
     public virtual void TryAutoAttack(BaseUnit target)
