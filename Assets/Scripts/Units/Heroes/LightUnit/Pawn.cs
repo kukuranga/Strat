@@ -75,7 +75,7 @@ public class Pawn : Character
         }
 
 
-        if (_BombRedCost < ResourceManager.Instance.GetRedResource())
+        if (_BombRedCost > ResourceManager.Instance.GetRedResource())
         {
             _CharacterTextBox.UpdateMessage("Not Enough Tech");
             return;
@@ -296,5 +296,11 @@ public class Pawn : Character
         //FireObject.SetActive(true);
         yield return StartCoroutine(base.MoveUnitRoutine(targetPos));
         //FireObject.SetActive(false);
+    }
+
+    public override void TakeDamage(float damage, float Acc, bool UseSPA, BaseUnit _DamagingUnit)
+    {
+        base.TakeDamage(damage, Acc, UseSPA, _DamagingUnit);
+        _PawnAnimCont.TakeDamage();
     }
 }

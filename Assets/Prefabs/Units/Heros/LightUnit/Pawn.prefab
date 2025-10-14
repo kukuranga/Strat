@@ -53833,7 +53833,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4357412601263928887}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 94bc8546fe222904c9fd6e0438c1b6fc, type: 3}
@@ -83351,7 +83351,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 94bc8546fe222904c9fd6e0438c1b6fc, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 3
   Loop: 1
   Mute: 0
   Spatialize: 0
@@ -83359,7 +83359,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 5
+  MaxDistance: 10
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -83433,7 +83433,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 1.079
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -83618,7 +83618,7 @@ MonoBehaviour:
   isRotating: 0
   CanMove: 1
   AttackConstant: 0
-  AutoAttackRange: 2
+  AutoAttackRange: 3
   isAttacking: 0
   nextAutoAttackTime: 0
   _ATBCombatCost: 3
@@ -83660,6 +83660,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Animator: {fileID: 660993643541533403}
   DeathParticles: {fileID: 3681337662383646455}
+  ShipGameObject: {fileID: 535406061986384388}
 --- !u!1 &9090806049110313368
 GameObject:
   m_ObjectHideFlags: 0
