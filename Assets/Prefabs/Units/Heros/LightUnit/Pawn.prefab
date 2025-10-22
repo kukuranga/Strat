@@ -83641,7 +83641,7 @@ MonoBehaviour:
   FireObject: {fileID: 6513661415307854594}
   _TurretModeStartupTime: 1
   _TurretTime: 10
-  BombRange: 2
+  BombRange: 1
   _TurretATBCost: 10
   _BombATBCost: 15
   _BombRedCost: 10

@@ -6,6 +6,7 @@ using UnityEngine;
 public class Mage : Character
 {
     [Header("Mage Attributes")]
+    public GameObject HealGameObject;
     public GameObject _Crystal;
     public GameObject _LightningField;
     public float _HealAmount = 1;
@@ -220,10 +221,12 @@ public class Mage : Character
         // 1) Pay cost
         ATBManager.Instance.PayATBCost(_ATBCombatCost);
 
+        HealGameObject.SetActive(true);
+
         // 2) Rotate toward the target
         foreach (BaseUnit target in targets)
         {
-            yield return RotateUnitTowards(target.transform.position);
+            //yield return RotateUnitTowards(target.transform.position);
 
             // 3) Apply heal
             target.HealDamage(_HealAmount);
@@ -232,6 +235,9 @@ public class Mage : Character
         nextAutoAttackTime = Time.time + autoAttackCooldown;
 
         isAttacking = false;
+
+        yield return new WaitForSeconds(2);
+        HealGameObject.SetActive(false);
 
         yield break;
     }

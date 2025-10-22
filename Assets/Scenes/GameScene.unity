@@ -756,6 +756,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 339369098}
+  - component: {fileID: 339369099}
   m_Layer: 5
   m_Name: Abilities
   m_TagString: Untagged
@@ -785,6 +786,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -988, y: -440}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &339369099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339369097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70b7090d93fdd24da0af93c1b342591, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _InputAbility1: {fileID: 149924802867582467, guid: 0ce18e13fcad7584d8a1615972e9229e,
+    type: 3}
+  _InputAbility2: {fileID: 6513882431944909311, guid: 0ce18e13fcad7584d8a1615972e9229e,
+    type: 3}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,7 +947,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 817799034}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &439768430
 MonoBehaviour:
@@ -1854,7 +1871,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 817799034}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &729852574
 MonoBehaviour:
@@ -1875,13 +1892,6 @@ MonoBehaviour:
     type: 3}
   _mountainTile: {fileID: 7115245336941187373, guid: 1ad67350318e2a9489333666e5994c4a,
     type: 3}
-  _cam: {fileID: 330585546}
-  cameraAngle: -10
-  cameraDistance: 10
-  moveSpeed: 5
-  zoomSpeed: 10
-  rotationSpeed: 30
-  useOrthographicCamera: 0
   _TileParent: {fileID: 2104612582}
 --- !u!1 &737876173
 GameObject:
@@ -2313,6 +2323,7 @@ Transform:
   m_Children:
   - {fileID: 2006717813}
   - {fileID: 857538874}
+  - {fileID: 1713534022}
   - {fileID: 729852573}
   - {fileID: 840563172}
   - {fileID: 1067985638}
@@ -2477,7 +2488,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 817799034}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &840563173
 MonoBehaviour:
@@ -2524,7 +2535,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 817799034}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &853711822
 MonoBehaviour:
@@ -2727,7 +2738,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 817799034}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &909961953
 MonoBehaviour:
@@ -3116,7 +3127,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 817799034}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1067985639
 MonoBehaviour:
@@ -4089,19 +4100,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1541742042}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1541742044}
-        m_TargetAssemblyTypeName: AbilityButton, Assembly-CSharp
-        m_MethodName: OnButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1541742042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4351,6 +4350,95 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _AssignedPlayer: 0
   _UnitType: 0
+--- !u!1 &1713534021
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1713534022}
+  - component: {fileID: 1713534023}
+  - component: {fileID: 1713534024}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1713534022
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713534021}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 817799034}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1713534023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713534021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 0ce18e13fcad7584d8a1615972e9229e,
+    type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Gameplay
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &1713534024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713534021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff61d0bd7c1b62b428f557be37db0599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _CameraMovement: {fileID: -6658238977007634771, guid: 0ce18e13fcad7584d8a1615972e9229e,
+    type: 3}
+  _ZoomMovement: {fileID: -6332806956589968623, guid: 0ce18e13fcad7584d8a1615972e9229e,
+    type: 3}
+  _TiltMovement: {fileID: -3049943920760197287, guid: 0ce18e13fcad7584d8a1615972e9229e,
+    type: 3}
+  _cam: {fileID: 330585546}
+  cameraAngle: 50
+  cameraDistance: 10
+  moveSpeed: 5
+  zoomSpeed: 10
+  rotationSpeed: 30
+  useOrthographicCamera: 0
 --- !u!1 &1799418952
 GameObject:
   m_ObjectHideFlags: 0
@@ -5322,19 +5410,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2065776745}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2065776743}
-        m_TargetAssemblyTypeName: AbilityButton, Assembly-CSharp
-        m_MethodName: OnButtonClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2065776745
 MonoBehaviour:
   m_ObjectHideFlags: 0
