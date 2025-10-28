@@ -6,6 +6,7 @@ using UnityEngine;
 public class Mage : Character
 {
     [Header("Mage Attributes")]
+    public MageVisualChanger _MVG;
     public GameObject HealGameObject;
     public GameObject _Crystal;
     public GameObject _LightningField;
@@ -64,30 +65,8 @@ public class Mage : Character
     {
         base.Ability2();
         ResetAbilities();
-        //if (Ability2CoolDown >= Ability2CoolDownTime)
+        if (Ability2CoolDown >= Ability2CoolDownTime)
         {
-            //Debug.Log("Mage uses Ability2.");
-
-            ////Step 1: highlight tiles around the unit
-            //List<Tile> _CrystalTiles = GetAllTilesInRange(3); //TODO: change the code to select all the tiles around the hovered tile rather than just highlighting the selected one
-            //foreach (Tile t in _CrystalTiles)
-            //{
-            //    t.SetAbility(this);
-            //}
-
-            //List<Tile> combat = GetAllTilesInAutoAttackRange();
-            //foreach (Tile t in combat)
-            //{
-            //    t.SetCombatTile(false);
-            //}
-
-            //CanMove = false;
-            //Ability2CoolDown = 0;
-            //_Ab2Selected = true;
-
-
-            //new version
-
             //get all tiles in range
             List<Tile> _LightningTiles = GridManager.Instance.GetTilesInRadius(OccupiedTile, LightningRange);
             //get 3 separtat tiles in range
@@ -123,15 +102,6 @@ public class Mage : Character
         }
         Debug.Log("Mage Ability2 on cooldown.");
 
-
-        //List<Tile> _TilesInRange = GridManager.Instance.GetTilesInRadius(this.OccupiedTile, LightingRange);
-
-        //Select several random tiles in the list of tiles
-
-
-
-        // for each one create a lightning field object and set its tile to this one
-
     }
 
     private void ResetAbilities()
@@ -163,6 +133,8 @@ public class Mage : Character
         //TODO: Pay atb cost
 
         yield return RotateUnitTowards(tile.transform.position);
+
+        _MVG.PlaceCrystal();
 
         yield return new WaitForSeconds(1f);
 
@@ -240,5 +212,11 @@ public class Mage : Character
         HealGameObject.SetActive(false);
 
         yield break;
+    }
+
+    public override void TakeDamage(float damage, float Acc, bool UseSPA, BaseUnit _DamagingUnit)
+    {
+        base.TakeDamage(damage, Acc, UseSPA, _DamagingUnit);
+        _MVG.TakeDamage();
     }
 }

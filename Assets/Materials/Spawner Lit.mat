@@ -94,7 +94,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0.571
-    - _NoiseScale: 100
+    - _NoiseScale: 500
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _Power: 0
@@ -109,11 +109,11 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 0, b: 0.03164482, a: 0}
+    - _BaseColor: {r: 0, g: 0.06305146, b: 1, a: 0}
     - _Color: {r: 1, g: 0.0141509175, b: 0.0141509175, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 1, g: 1, b: 1, a: 0.7882353}
-    - _FresnelColor2: {r: 1, g: 1, b: 1, a: 0}
+    - _FresnelColor: {r: 0.990566, g: 0.990566, b: 0.990566, a: 0.7882353}
+    - _FresnelColor2: {r: 0.22828409, g: 0.509434, b: 0.25036892, a: 0}
     - _NoiseScroll: {r: 1.09, g: -2, b: 0, a: 0}
     - _Noise_Tiling: {r: 15, g: 18, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

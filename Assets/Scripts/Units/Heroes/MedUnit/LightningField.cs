@@ -28,6 +28,7 @@ public class LightningField : MonoBehaviour
         _OccupiedTile = _tile;
         _Delay = Delay;
         _OwnerUnit = owner;
+        _HB._OwnerUnit = owner;
         this.transform.position = new Vector3(_OccupiedTile.gameObject.transform.position.x, _OccupiedTile.gameObject.transform.position.y, this.transform.position.z);
         //Set its location to the occupied tile here
         //begin the countdown for the lightning strikes
