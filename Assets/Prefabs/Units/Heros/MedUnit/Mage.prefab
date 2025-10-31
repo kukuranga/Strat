@@ -1251,6 +1251,7 @@ MonoBehaviour:
   Faction: 0
   _LastUnitThatDamaged: {fileID: 0}
   _CharacterTextBox: {fileID: 6088854856124611676}
+  BeingPushed: 0
   Atk: 1
   SpAtk: 5
   Def: 5
@@ -1262,6 +1263,11 @@ MonoBehaviour:
   _ATBSpawnCost: 20
   CollisionGameObjects: {fileID: 8454702544029811323}
   _Interactable: 0
+  raycastDistance: 10
+  tileLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  raycastOffset: {x: 0, y: 1, z: 0}
   _ATBMoveCost: 5
   moveSpeed: 1
   rotateSpeed: 360

@@ -17,6 +17,7 @@ public class BaseUnit : MonoBehaviour
     public Faction Faction;
     public BaseUnit _LastUnitThatDamaged;
     public CharacterTextBox _CharacterTextBox;
+    public bool BeingPushed;
 
     [Header("Combat Stats")]
     public float Atk = 0; // Basic Attack value
@@ -55,6 +56,7 @@ public class BaseUnit : MonoBehaviour
     protected virtual void Update()
     {
         SetHurtBox();
+        PerformTileRaycast();
     }
 
     /// <summary>
@@ -214,5 +216,172 @@ public class BaseUnit : MonoBehaviour
         }
 
         UnitManager.Instance.KillUnit(this);
+    }
+
+    #region Push Logic
+    public void Push(BaseUnit PushingUnit, int Distance)
+    {
+        CardinalDirection dir = GetDirection(PushingUnit.OccupiedTile._coordinates, this.OccupiedTile._coordinates);
+
+        Vector2 SearchTile = this.OccupiedTile._coordinates;
+        Tile _ClosestTile = this.OccupiedTile;
+
+        for (int i = 0; i < Distance; i++)
+        {
+            _ClosestTile = GetClosestCardinalTile(SearchTile, dir);
+
+            if (_ClosestTile == null)
+                return;
+            if (!_ClosestTile._isWalkable)
+                return;
+            if (_ClosestTile.occupiedUnit = null)
+                return;
+
+            SearchTile = _ClosestTile._coordinates;
+        }
+
+        StartCoroutine(PushMovement(_ClosestTile, 5));
+    }
+
+    private Tile GetClosestCardinalTile(Vector2 CurrentCord ,CardinalDirection _Dir)
+    {
+        //Vector2 CurrentCord = this.OccupiedTile._coordinates;
+
+        switch (_Dir)
+        {
+            case CardinalDirection.North:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(0, -1));
+            case CardinalDirection.NorthEast:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(1, -1));
+            case CardinalDirection.East:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(1, 0));
+            case CardinalDirection.SouthEast:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(1, 1));
+            case CardinalDirection.South:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(0, 1));
+            case CardinalDirection.SouthWest:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(-1, 1));
+            case CardinalDirection.West:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(-1, 0));
+            case CardinalDirection.NorthWest:
+                return GridManager.Instance.GetTileAtCord(CurrentCord + new Vector2(-1, -1));
+            default:
+                return GridManager.Instance.GetTileAtCord(CurrentCord);
+        }
+    }
+
+    IEnumerator PushMovement(Tile TargetTile ,float moveSpeed)
+    {
+        BeingPushed = true;
+        Vector3 targetPos = TargetTile.transform.position;
+        targetPos.z = this.transform.position.z;
+
+        while (Vector3.Distance(transform.position, targetPos) > 0.01f)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                targetPos,
+                moveSpeed * Time.deltaTime
+            );
+            yield return null;
+        }
+
+        transform.position = targetPos;
+        OccupiedTile.ClearOccupiedUnit();
+        OccupiedTile = TargetTile;
+        TargetTile.SetUnit(this, false);
+        BeingPushed = false;
+        yield return null;
+    }
+
+    public enum CardinalDirection
+    {
+        North,
+        NorthEast,
+        East,
+        SouthEast,
+        South,
+        SouthWest,
+        West,
+        NorthWest
+    }
+
+    public CardinalDirection GetDirection(Vector2 from, Vector2 to)
+    {
+        Vector2 direction = to - from;
+
+        // Calculate angle in degrees (0 = East, 90 = North, 180 = West, 270 = South)
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Convert to 0 = North, 90 = East, 180 = South, 270 = West
+        angle = (angle + 90f) % 360f;
+        if (angle < 0) angle += 360f;
+
+        // Determine direction based on angle
+        if (angle >= 337.5f || angle < 22.5f) return CardinalDirection.North;
+        if (angle >= 22.5f && angle < 67.5f) return CardinalDirection.NorthEast;
+        if (angle >= 67.5f && angle < 112.5f) return CardinalDirection.East;
+        if (angle >= 112.5f && angle < 157.5f) return CardinalDirection.SouthEast;
+        if (angle >= 157.5f && angle < 202.5f) return CardinalDirection.South;
+        if (angle >= 202.5f && angle < 247.5f) return CardinalDirection.SouthWest;
+        if (angle >= 247.5f && angle < 292.5f) return CardinalDirection.West;
+        return CardinalDirection.NorthWest; // 292.5 - 337.5
+    }
+    #endregion
+
+
+    [Header("Raycast Settings")]
+    [SerializeField] private float raycastDistance = 1f;
+    [SerializeField] private LayerMask tileLayerMask;
+    [SerializeField] private Vector3 raycastOffset = new Vector3(0, 0, 0); // Offset to start above ground
+
+    private void PerformTileRaycast()
+    {
+        // Calculate raycast origin and direction
+        Vector3 rayOrigin = transform.position;// + raycastOffset;
+        Vector3 rayDirection = Vector3.forward;
+
+        // Perform the raycast
+        RaycastHit hit;
+        if (Physics.Raycast(rayOrigin, rayDirection, out hit, raycastDistance, tileLayerMask))
+        {
+            // Check if we hit a Tile object specifically
+            Tile hitTile = hit.collider.GetComponent<Tile>();
+            if (hitTile != null)
+            {
+                // We hit a tile, call the method
+                OnTileHit(hitTile, hit.point);
+            }
+        }
+
+        // Optional: Visualize the raycast in the editor
+        Debug.DrawRay(rayOrigin, rayDirection * raycastDistance, Color.red);
+    }
+
+    /// <summary>
+    /// Called when the raycast hits a Tile object
+    /// </summary>
+    /// <param name="tile">The tile that was hit</param>
+    /// <param name="hitPoint">The world position where the ray hit</param>
+    private void OnTileHit(Tile tile, Vector3 hitPoint)
+    {
+        Debug.Log($"Hit tile at coordinates: {tile._coordinates}, World position: {hitPoint}");
+
+        if(OccupiedTile != tile)
+        {
+            OccupiedTile.ClearOccupiedUnit();
+            SetTile(tile);
+            tile.SetUnit(this, false);
+        }
+    }
+
+    /// <summary>
+    /// Optional: Method to configure raycast settings at runtime
+    /// </summary>
+    public void ConfigureRaycast(float distance, LayerMask mask, Vector3 offset)
+    {
+        raycastDistance = distance;
+        tileLayerMask = mask;
+        raycastOffset = offset;
     }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9116713685922721206}
   - component: {fileID: 6247387131963020511}
   - component: {fileID: 4703393801548917309}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SelectedHighlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 718728569210483735}
   - component: {fileID: 3445315929068298819}
   - component: {fileID: 1826518629946397108}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: AbilityHighlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 2419458816249020736}
   - component: {fileID: 2154613579697235197}
   - component: {fileID: 3071154411963417976}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CombatHighlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 1201016597497739265}
   - component: {fileID: 7682160838765375802}
   - component: {fileID: 8654717572498597813}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Spawnable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 7115245336941187369}
   - component: {fileID: 7115245336941187373}
   - component: {fileID: 3469975707751755851}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: MountainTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -450,6 +450,7 @@ MonoBehaviour:
   _isWalkable: 0
   occupiedUnit: {fileID: 0}
   AbilityUnit: {fileID: 0}
+  OccupiedItem: {fileID: 0}
   _Spawnable: 0
   _Selected: 0
   _Combat: 0
@@ -480,7 +481,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7115245337873305972}
   - component: {fileID: 7115245337873305975}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -567,7 +568,7 @@ GameObject:
   - component: {fileID: 7115245338724007719}
   - component: {fileID: 7115245338724007716}
   - component: {fileID: 7115245338724007717}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -664,7 +665,7 @@ GameObject:
   - component: {fileID: 5248974071046947821}
   - component: {fileID: 3751466734836278283}
   - component: {fileID: 872781616826512900}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Highlight (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

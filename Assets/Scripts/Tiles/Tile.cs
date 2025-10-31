@@ -45,6 +45,10 @@ public class Tile : MonoBehaviour
                 ClearAbility();
             }
         }
+
+        if (GameManager.Instance._DebuggerMode)
+            if (occupiedUnit != null)
+                _SelectedTile.SetActive(true);
     }
 
     public virtual void Init(int x, int y)

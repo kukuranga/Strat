@@ -5048,7 +5048,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   State: 0
-  _DebuggerMode: 0
+  _DebuggerMode: 1
   _HitStop: {fileID: 0}
 --- !u!1 &2016133351
 GameObject:

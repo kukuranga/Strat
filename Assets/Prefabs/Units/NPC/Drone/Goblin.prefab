@@ -1223,6 +1223,7 @@ MonoBehaviour:
   Faction: 2
   _LastUnitThatDamaged: {fileID: 0}
   _CharacterTextBox: {fileID: 3813491093201399272}
+  BeingPushed: 0
   Atk: 5
   SpAtk: 5
   Def: 5
@@ -1234,6 +1235,11 @@ MonoBehaviour:
   _ATBSpawnCost: 0
   CollisionGameObjects: {fileID: 8454702544029811323}
   _Interactable: 0
+  raycastDistance: 10
+  tileLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  raycastOffset: {x: 0, y: 1, z: 0}
   moveSpeed: 3
   rotateSpeed: 360
   isMoving: 0
@@ -1396,9 +1402,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4254320893136911987, guid: 923d799530370254b9fa73a626da3ff8,
         type: 3}
+      propertyPath: _Push
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4254320893136911987, guid: 923d799530370254b9fa73a626da3ff8,
+        type: 3}
       propertyPath: _OwnerUnit
       value: 
       objectReference: {fileID: 8970350952412575709}
+    - target: {fileID: 4254320893136911987, guid: 923d799530370254b9fa73a626da3ff8,
+        type: 3}
+      propertyPath: _PushDistance
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 923d799530370254b9fa73a626da3ff8, type: 3}
 --- !u!1 &6709359905024875618 stripped

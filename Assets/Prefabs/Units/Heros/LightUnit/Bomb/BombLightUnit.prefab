@@ -4989,6 +4989,8 @@ MonoBehaviour:
   _OwnerUnit: {fileID: 0}
   shouldDespawn: 0
   _Targets: 6
+  _Push: 1
+  _PushDistance: 3
 --- !u!114 &3037020160039459942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10328,7 +10330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97f57d928f2d3f849b7c78bb4533e3f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Priority: 0
+  Priority: 5
   _ParentGameObject: {fileID: 8327706387784846706}
   _PSBombSetOff: {fileID: 6911285320708861113}
   _Owner: {fileID: 0}

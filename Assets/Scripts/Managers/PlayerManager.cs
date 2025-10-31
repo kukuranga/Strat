@@ -17,8 +17,10 @@ public class PlayerManager : Singleton<PlayerManager>
     private Tile _destinationTile; // The tile the unit is moving towards
     private LineRenderer _lineRenderer; // To draw the path to the destination
 
+
     private void Start()
     {
+
         // Initialize the line renderer
         GameObject lineObject = new GameObject("LineRenderer");
         _lineRenderer = lineObject.AddComponent<LineRenderer>();

@@ -67,6 +67,8 @@ public class ProjectileHitBox : HitBox
             if (!_hitTargets.Contains(hurtBox))
             {
                 _hitTargets.Add(hurtBox);
+                if (_Push)
+                    hurtBox.OnPush(_OwnerUnit, _PushDistance);
                 hurtBox.OnHit(defaultDamage, Acc, UseSPA,this);
                 if (_OnHitProduceGreen)
                     ResourceManager.Instance.AddGreenResource(1);

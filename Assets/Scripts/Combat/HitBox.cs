@@ -20,6 +20,11 @@ public class HitBox : MonoBehaviour
     [Tooltip("List of target factions this HitBox can damage.")]
     [EnumFlags] public Faction _Targets;
 
+    [Header("Push Settings")]
+    public bool _Push;
+    public int _PushDistance;
+
+
     // Keep track of all HurtBoxes hit during this frame 
     public HashSet<HurtBox> _hitTargets = new HashSet<HurtBox>();
 
@@ -39,6 +44,8 @@ public class HitBox : MonoBehaviour
             if (!_hitTargets.Contains(hurtBox))
             {
                 _hitTargets.Add(hurtBox);
+                if (_Push)
+                    hurtBox.OnPush(_OwnerUnit, _PushDistance);
                 hurtBox.OnHit(defaultDamage, Acc, UseSPA ,this);///------------------------------------------------Here-------------------------------------------------------
             }
         }
@@ -50,15 +57,6 @@ public class HitBox : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        // Optionally, you can add logic here if needed
-    }
-
-    /// <summary>
-    /// Called after all hits for this frame are done. 
-    /// Destroys the HitBox GameObject if shouldDespawn is true.
-    /// </summary>
     public virtual void AfterHitEffect() // Marked as virtual
     {
         if (shouldDespawn)

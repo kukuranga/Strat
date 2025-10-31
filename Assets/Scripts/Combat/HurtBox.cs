@@ -14,4 +14,9 @@ public class HurtBox : MonoBehaviour
         HB.AfterHitEffect();
     }
 
+    public void OnPush(BaseUnit _unit, int _distance)
+    {
+        ownerUnit.Push(_unit, _distance);
+    }
+
 }

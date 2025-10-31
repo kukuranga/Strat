@@ -210,6 +210,14 @@ public class Character : BaseUnit
         _AttackSlider.value = nextAutoAttackTime / autoAttackCooldown;
     }
 
+    public override void TakeDamage(float damage, float Acc, bool UseSPA, BaseUnit _DamagingUnit)
+    {
+        //_pathfinding.StopPathing();
+        if (PlayerManager.Instance._SelectedUnit == this)
+            PlayerManager.Instance.ClearSelectedUnit();
+        base.TakeDamage(damage, Acc, UseSPA, _DamagingUnit);
+    }
+
     public void MoveToDestination(Tile destinationTile)
     {
         if(!CanMove)
@@ -273,7 +281,7 @@ public class Character : BaseUnit
     private IEnumerator FollowPath()
     {
 
-        while (_currentPathIndex < _currentPath.Count)
+        while (_currentPathIndex < _currentPath.Count && !BeingPushed)
         {
             _IsPathfinding = true;
 
@@ -339,11 +347,14 @@ public class Character : BaseUnit
 
                 while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
                 {
-                    transform.rotation = Quaternion.RotateTowards(
-                        transform.rotation,
-                        targetRotation,
-                        rotateSpeed * Time.deltaTime
-                    );
+                    if (!BeingPushed)
+                    {
+                        transform.rotation = Quaternion.RotateTowards(
+                            transform.rotation,
+                            targetRotation,
+                            rotateSpeed * Time.deltaTime
+                        );
+                    }
                     yield return null;
                 }
                 transform.rotation = targetRotation;
@@ -356,11 +367,14 @@ public class Character : BaseUnit
 
         while (Vector3.Distance(transform.position, targetPos) > 0.01f)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                targetPos,
-                moveSpeed * Time.deltaTime
-            );
+            if (!BeingPushed)
+            {
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    targetPos,
+                    moveSpeed * Time.deltaTime
+                );
+            }
             yield return null;
         }
 

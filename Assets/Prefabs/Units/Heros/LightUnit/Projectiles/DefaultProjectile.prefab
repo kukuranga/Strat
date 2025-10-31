@@ -105,6 +105,8 @@ MonoBehaviour:
   _OwnerUnit: {fileID: 0}
   shouldDespawn: 1
   _Targets: 6
+  _Push: 1
+  _PushDistance: 1
   speed: 4
   lifeTime: 2
   travelDirection: {x: 0, y: 0, z: 1}

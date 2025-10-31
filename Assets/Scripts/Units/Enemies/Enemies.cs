@@ -181,27 +181,27 @@ public class Enemies : BaseUnit
     {
         isMoving = true;
 
-        while (_currentPathIndex < _currentPath.Count)
+        while (_currentPathIndex < _currentPath.Count && !BeingPushed)
         {
-            Tile nextTile = _currentPath[_currentPathIndex];
+                Tile nextTile = _currentPath[_currentPathIndex];
 
-            // Check if the next tile is occupied
-            if (nextTile.occupiedUnit != null)
-            {
-                Debug.LogWarning($"Tile at {nextTile._coordinates} is occupied. Stopping movement.");
-                break;
-            }
+                // Check if the next tile is occupied
+                if (nextTile.occupiedUnit != null)
+                {
+                    Debug.LogWarning($"Tile at {nextTile._coordinates} is occupied. Stopping movement.");
+                    break;
+                }
 
-            // Update the unit's occupied tile
-            if (OccupiedTile != null)
-            {
-                OccupiedTile.occupiedUnit = null; // Clear the old tile's occupant
-            }
-            nextTile.occupiedUnit = this; // Set the new tile's occupant
-            OccupiedTile = nextTile; // Update the unit's current tile
+                // Update the unit's occupied tile
+                if (OccupiedTile != null)
+                {
+                    OccupiedTile.occupiedUnit = null; // Clear the old tile's occupant
+                }
+                nextTile.occupiedUnit = this; // Set the new tile's occupant
+                OccupiedTile = nextTile; // Update the unit's current tile
 
-            yield return StartCoroutine(MoveUnitRoutine(nextTile.transform.position));
-            _currentPathIndex++;
+                yield return StartCoroutine(MoveUnitRoutine(nextTile.transform.position));
+                _currentPathIndex++;
         }
 
         isMoving = false;
@@ -234,11 +234,14 @@ public class Enemies : BaseUnit
 
                 while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
                 {
-                    transform.rotation = Quaternion.RotateTowards(
-                        transform.rotation,
-                        targetRotation,
-                        rotateSpeed * Time.deltaTime
-                    );
+                    if (!BeingPushed)
+                    {
+                        transform.rotation = Quaternion.RotateTowards(
+                            transform.rotation,
+                            targetRotation,
+                            rotateSpeed * Time.deltaTime
+                        );
+                    }
                     yield return null;
                 }
                 transform.rotation = targetRotation;
@@ -301,5 +304,11 @@ public class Enemies : BaseUnit
             }
             transform.rotation = targetRotation;
         }
+    }
+
+    public override void TakeDamage(float damage, float Acc, bool UseSPA, BaseUnit _DamagingUnit)
+    {
+        //_pathfinding.StopPathing();
+        base.TakeDamage(damage, Acc, UseSPA, _DamagingUnit);
     }
 }
